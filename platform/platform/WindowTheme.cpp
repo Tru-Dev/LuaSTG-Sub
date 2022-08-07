@@ -91,7 +91,7 @@ namespace platform
 			
 			std::ignore = bFocus;
 			BOOL dark_mode = bEnable;
-			HRESULT hr = loader().api_DwmSetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark_mode, sizeof(dark_mode));
+			HRESULT hr = loader().api_DwmSetWindowAttribute(hWnd, 20, &dark_mode, sizeof(dark_mode));
 			return SUCCEEDED(hr);
 			
 			// Method 2: DWMWA_CAPTION_COLOR
