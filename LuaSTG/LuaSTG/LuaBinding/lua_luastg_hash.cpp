@@ -111,6 +111,60 @@ LuaSTG::GameObjectMember LuaSTG::MapGameObjectMember(const char* key) {
                   break;
               }
               break;
+            case 'u':
+              switch(key[3]) {
+                case 'b':
+                  switch(key[4]) {
+                    case 'a':
+                      switch(key[5]) {
+                        case '\0':
+                          return LuaSTG::GameObjectMember::_SUBA;
+                      }
+                      break;
+                    case 'b':
+                      switch(key[5]) {
+                        case '\0':
+                          return LuaSTG::GameObjectMember::_SUBB;
+                      }
+                      break;
+                    case 'c':
+                      switch(key[5]) {
+                        case 'o':
+                          switch(key[6]) {
+                            case 'l':
+                              switch(key[7]) {
+                                case 'o':
+                                  switch(key[8]) {
+                                    case 'r':
+                                      switch(key[9]) {
+                                        case '\0':
+                                          return LuaSTG::GameObjectMember::_SUBCOLOR;
+                                      }
+                                      break;
+                                  }
+                                  break;
+                              }
+                              break;
+                          }
+                          break;
+                      }
+                      break;
+                    case 'g':
+                      switch(key[5]) {
+                        case '\0':
+                          return LuaSTG::GameObjectMember::_SUBG;
+                      }
+                      break;
+                    case 'r':
+                      switch(key[5]) {
+                        case '\0':
+                          return LuaSTG::GameObjectMember::_SUBR;
+                      }
+                      break;
+                  }
+                  break;
+              }
+              break;
           }
           break;
       }
@@ -787,6 +841,142 @@ LuaSTG::BlendModeX LuaSTG::MapBlendModeX(const char* key) {
                                           return LuaSTG::BlendModeX::AlphaBal;
                                       }
                                       break;
+                                  }
+                                  break;
+                              }
+                              break;
+                          }
+                          break;
+                      }
+                      break;
+                  }
+                  break;
+              }
+              break;
+          }
+          break;
+      }
+      break;
+    case 'g':
+      switch(key[1]) {
+        case 'r':
+          switch(key[2]) {
+            case 'a':
+              switch(key[3]) {
+                case 'd':
+                  switch(key[4]) {
+                    case '+':
+                      switch(key[5]) {
+                        case 'a':
+                          switch(key[6]) {
+                            case 'd':
+                              switch(key[7]) {
+                                case 'd':
+                                  switch(key[8]) {
+                                    case '\0':
+                                      return LuaSTG::BlendModeX::GradAdd;
+                                  }
+                                  break;
+                              }
+                              break;
+                            case 'l':
+                              switch(key[7]) {
+                                case 'p':
+                                  switch(key[8]) {
+                                    case 'h':
+                                      switch(key[9]) {
+                                        case 'a':
+                                          switch(key[10]) {
+                                            case '\0':
+                                              return LuaSTG::BlendModeX::GradAlpha;
+                                          }
+                                          break;
+                                      }
+                                      break;
+                                  }
+                                  break;
+                              }
+                              break;
+                          }
+                          break;
+                        case 'm':
+                          switch(key[6]) {
+                            case 'a':
+                              switch(key[7]) {
+                                case 'x':
+                                  switch(key[8]) {
+                                    case '\0':
+                                      return LuaSTG::BlendModeX::GradMax;
+                                  }
+                                  break;
+                              }
+                              break;
+                            case 'i':
+                              switch(key[7]) {
+                                case 'n':
+                                  switch(key[8]) {
+                                    case '\0':
+                                      return LuaSTG::BlendModeX::GradMin;
+                                  }
+                                  break;
+                              }
+                              break;
+                            case 'u':
+                              switch(key[7]) {
+                                case 'l':
+                                  switch(key[8]) {
+                                    case '\0':
+                                      return LuaSTG::BlendModeX::GradMutiply;
+                                  }
+                                  break;
+                              }
+                              break;
+                          }
+                          break;
+                        case 'r':
+                          switch(key[6]) {
+                            case 'e':
+                              switch(key[7]) {
+                                case 'v':
+                                  switch(key[8]) {
+                                    case '\0':
+                                      return LuaSTG::BlendModeX::GradRev;
+                                  }
+                                  break;
+                              }
+                              break;
+                          }
+                          break;
+                        case 's':
+                          switch(key[6]) {
+                            case 'c':
+                              switch(key[7]) {
+                                case 'r':
+                                  switch(key[8]) {
+                                    case 'e':
+                                      switch(key[9]) {
+                                        case 'e':
+                                          switch(key[10]) {
+                                            case 'n':
+                                              switch(key[11]) {
+                                                case '\0':
+                                                  return LuaSTG::BlendModeX::GradScreen;
+                                              }
+                                              break;
+                                          }
+                                          break;
+                                      }
+                                      break;
+                                  }
+                                  break;
+                              }
+                              break;
+                            case 'u':
+                              switch(key[7]) {
+                                case 'b':
+                                  switch(key[8]) {
+                                    case '\0':
+                                      return LuaSTG::BlendModeX::GradSub;
                                   }
                                   break;
                               }

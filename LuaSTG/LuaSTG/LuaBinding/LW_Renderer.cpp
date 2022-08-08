@@ -74,6 +74,14 @@ static Core::Graphics::IRenderer::BlendState translate_blend_3d(const LuaSTGPlus
         return Core::Graphics::IRenderer::BlendState::RevSub;
     case LuaSTGPlus::BlendMode::AddSub:
         return Core::Graphics::IRenderer::BlendState::Sub;
+    case LuaSTGPlus::BlendMode::GradAlpha:
+        return Core::Graphics::IRenderer::BlendState::Alpha;
+    case LuaSTGPlus::BlendMode::GradAdd:
+        return Core::Graphics::IRenderer::BlendState::Add;
+    case LuaSTGPlus::BlendMode::GradRev:
+        return Core::Graphics::IRenderer::BlendState::RevSub;
+    case LuaSTGPlus::BlendMode::GradSub:
+        return Core::Graphics::IRenderer::BlendState::Sub;
     case LuaSTGPlus::BlendMode::AlphaBal:
         return Core::Graphics::IRenderer::BlendState::Inv;
     case LuaSTGPlus::BlendMode::MulMin:
@@ -91,6 +99,14 @@ static Core::Graphics::IRenderer::BlendState translate_blend_3d(const LuaSTGPlus
     case LuaSTGPlus::BlendMode::AddMutiply:
         return Core::Graphics::IRenderer::BlendState::Mul;
     case LuaSTGPlus::BlendMode::AddScreen:
+        return Core::Graphics::IRenderer::BlendState::Screen;
+    case LuaSTGPlus::BlendMode::GradMin:
+        return Core::Graphics::IRenderer::BlendState::Min;
+    case LuaSTGPlus::BlendMode::GradMax:
+        return Core::Graphics::IRenderer::BlendState::Max;
+    case LuaSTGPlus::BlendMode::GradMutiply:
+        return Core::Graphics::IRenderer::BlendState::Mul;
+    case LuaSTGPlus::BlendMode::GradScreen:
         return Core::Graphics::IRenderer::BlendState::Screen;
     case LuaSTGPlus::BlendMode::One:
         return Core::Graphics::IRenderer::BlendState::One;
@@ -389,7 +405,8 @@ static int lib_drawTriangle(lua_State* L)
     vertex[0].u = (float)luaL_checknumber(L, 7);
     vertex[0].v = (float)luaL_checknumber(L, 8);
     vertex[0].color = (uint32_t)luaL_checknumber(L, 9);
-    lua_pop(L, 6);
+    vertex[0].subcolor = (uint32_t)luaL_checknumber(L, 10);
+    lua_pop(L, 7);
 
     lua_rawgeti(L, 2, 1);
     lua_rawgeti(L, 2, 2);
@@ -403,7 +420,8 @@ static int lib_drawTriangle(lua_State* L)
     vertex[1].u = (float)luaL_checknumber(L, 7);
     vertex[1].v = (float)luaL_checknumber(L, 8);
     vertex[1].color = (uint32_t)luaL_checknumber(L, 9);
-    lua_pop(L, 6);
+    vertex[1].subcolor = (uint32_t)luaL_checknumber(L, 10);
+    lua_pop(L, 7);
 
     lua_rawgeti(L, 3, 1);
     lua_rawgeti(L, 3, 2);
@@ -417,7 +435,8 @@ static int lib_drawTriangle(lua_State* L)
     vertex[2].u = (float)luaL_checknumber(L, 7);
     vertex[2].v = (float)luaL_checknumber(L, 8);
     vertex[2].color = (uint32_t)luaL_checknumber(L, 9);
-    lua_pop(L, 6);
+    vertex[2].subcolor = (uint32_t)luaL_checknumber(L, 10);
+    lua_pop(L, 7);
 
     LR2D()->drawTriangle(vertex[0], vertex[1], vertex[2]);
     return 0;
@@ -438,7 +457,8 @@ static int lib_drawQuad(lua_State* L)
     vertex[0].u = (float)luaL_checknumber(L, 8);
     vertex[0].v = (float)luaL_checknumber(L, 9);
     vertex[0].color = (uint32_t)luaL_checknumber(L, 10);
-    lua_pop(L, 6);
+    vertex[0].subcolor = (uint32_t)luaL_checknumber(L, 11);
+    lua_pop(L, 7);
 
     lua_rawgeti(L, 2, 1);
     lua_rawgeti(L, 2, 2);
@@ -452,7 +472,8 @@ static int lib_drawQuad(lua_State* L)
     vertex[1].u = (float)luaL_checknumber(L, 8);
     vertex[1].v = (float)luaL_checknumber(L, 9);
     vertex[1].color = (uint32_t)luaL_checknumber(L, 10);
-    lua_pop(L, 6);
+    vertex[1].subcolor = (uint32_t)luaL_checknumber(L, 11);
+    lua_pop(L, 7);
 
     lua_rawgeti(L, 3, 1);
     lua_rawgeti(L, 3, 2);
@@ -466,7 +487,8 @@ static int lib_drawQuad(lua_State* L)
     vertex[2].u = (float)luaL_checknumber(L, 8);
     vertex[2].v = (float)luaL_checknumber(L, 9);
     vertex[2].color = (uint32_t)luaL_checknumber(L, 10);
-    lua_pop(L, 6);
+    vertex[2].subcolor = (uint32_t)luaL_checknumber(L, 11);
+    lua_pop(L, 7);
 
     lua_rawgeti(L, 4, 1);
     lua_rawgeti(L, 4, 2);
@@ -480,7 +502,8 @@ static int lib_drawQuad(lua_State* L)
     vertex[3].u = (float)luaL_checknumber(L, 8);
     vertex[3].v = (float)luaL_checknumber(L, 9);
     vertex[3].color = (uint32_t)luaL_checknumber(L, 10);
-    lua_pop(L, 6);
+    vertex[3].subcolor = (uint32_t)luaL_checknumber(L, 11);
+    lua_pop(L, 7);
 
     LR2D()->drawQuad(vertex[0], vertex[1], vertex[2], vertex[3]);
     return 0;
