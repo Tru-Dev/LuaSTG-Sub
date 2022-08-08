@@ -548,6 +548,44 @@ void LuaSTGPlus::LuaWrapper::ResourceMgrWrapper::Register(lua_State* L) noexcept
 			}
 			return 0;
 		}
+		static int SetImageColor(lua_State* L) noexcept
+		{
+			ResSprite* p = LRES.FindSprite(luaL_checkstring(L, 1));
+			if (!p)
+				return luaL_error(L, "image '%s' not found.", luaL_checkstring(L, 1));
+			if (lua_gettop(L) == 2)
+				p->GetSprite()->setColor(*ColorWrapper::Cast(L, 2));
+			else if (lua_gettop(L) == 5)
+			{
+				Core::Color4B tColors[] = {
+					*ColorWrapper::Cast(L, 2),
+					*ColorWrapper::Cast(L, 3),
+					*ColorWrapper::Cast(L, 4),
+					*ColorWrapper::Cast(L, 5)
+				};
+				p->GetSprite()->setColor(tColors);
+			}
+			return 0;
+		}
+		static int SetImageSubColor(lua_State* L) noexcept
+		{
+			ResSprite* p = LRES.FindSprite(luaL_checkstring(L, 1));
+			if (!p)
+				return luaL_error(L, "image '%s' not found.", luaL_checkstring(L, 1));
+			if (lua_gettop(L) == 2)
+				p->GetSprite()->setSubColor(*ColorWrapper::Cast(L, 2));
+			else if (lua_gettop(L) == 5)
+			{
+				Core::Color4B tColors[] = {
+					*ColorWrapper::Cast(L, 2),
+					*ColorWrapper::Cast(L, 3),
+					*ColorWrapper::Cast(L, 4),
+					*ColorWrapper::Cast(L, 5)
+				};
+				p->GetSprite()->setSubColor(tColors);
+			}
+			return 0;
+		}
 		static int SetImageCenter(lua_State* L) noexcept
 		{
 			ResSprite* p = LRES.FindSprite(luaL_checkstring(L, 1));
@@ -667,6 +705,8 @@ void LuaSTGPlus::LuaWrapper::ResourceMgrWrapper::Register(lua_State* L) noexcept
 		{ "SetImageScale", &Wrapper::SetImageScale },
 		{ "GetImageScale", &Wrapper::GetImageScale },
 		{ "SetImageState", &Wrapper::SetImageState },
+		{ "SetImageColor", &Wrapper::SetImageColor },
+		{ "SetImageSubColor", &Wrapper::SetImageSubColor },
 		{ "SetImageCenter", &Wrapper::SetImageCenter },
 
 		{ "SetAnimationScale", &Wrapper::SetAnimationScale },

@@ -16,6 +16,7 @@ namespace Core::Graphics
 		float m_z;
 		float m_scale;
 		Color4B m_color[4];
+		Color4B m_subcolor[4];
 
 		void updateRect();
 
@@ -55,6 +56,28 @@ namespace Core::Graphics
 			color[1] = m_color[1];
 			color[2] = m_color[2];
 			color[3] = m_color[3];
+		}
+
+		void setSubColor(Color4B color)
+		{
+			m_subcolor[0] = color;
+			m_subcolor[1] = color;
+			m_subcolor[2] = color;
+			m_subcolor[3] = color;
+		}
+		void setSubColor(Color4B const* color)
+		{
+			m_subcolor[0] = color[0];
+			m_subcolor[1] = color[1];
+			m_subcolor[2] = color[2];
+			m_subcolor[3] = color[3];
+		}
+		void getSubColor(Color4B* color)
+		{
+			color[0] = m_subcolor[0];
+			color[1] = m_subcolor[1];
+			color[2] = m_subcolor[2];
+			color[3] = m_subcolor[3];
 		}
 
 		void draw(RectF const& rc);
