@@ -1621,7 +1621,7 @@ namespace Core::Graphics
 				src.data(), src.size(),
 				0,
 				D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0,
-				FALSE,
+				DirectX::DDS_LOADER_IGNORE_SRGB,
 				&res, &d3d11_srv,
 				&dds_alpha_mode);
 			if (FAILED(hr1))
