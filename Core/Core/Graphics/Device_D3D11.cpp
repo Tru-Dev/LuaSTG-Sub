@@ -62,7 +62,7 @@ namespace Core::Graphics
 	{
 		switch (level)
 		{
-		case D3D_FEATURE_LEVEL_12_2: return "12.2";
+		//case D3D_FEATURE_LEVEL_12_2: return "12.2";
 		case D3D_FEATURE_LEVEL_12_1: return "12.1";
 		case D3D_FEATURE_LEVEL_12_0: return "12.0";
 		case D3D_FEATURE_LEVEL_11_1: return "11.1";
@@ -169,7 +169,7 @@ namespace Core::Graphics
 	{
 		switch (level)
 		{
-		case D3D_FEATURE_LEVEL_12_2:
+		//case D3D_FEATURE_LEVEL_12_2:
 		case D3D_FEATURE_LEVEL_12_1:
 		case D3D_FEATURE_LEVEL_12_0:
 		case D3D_FEATURE_LEVEL_11_1:
@@ -1621,7 +1621,7 @@ namespace Core::Graphics
 				src.data(), src.size(),
 				0,
 				D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0,
-				DirectX::DDS_LOADER_IGNORE_SRGB, // TODO: 这里也同样忽略了 sRGB，看以后渲染管线颜色空间怎么改
+				FALSE,
 				&res, &d3d11_srv,
 				&dds_alpha_mode);
 			if (FAILED(hr1))
