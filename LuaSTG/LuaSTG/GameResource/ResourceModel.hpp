@@ -35,6 +35,8 @@ namespace LuaSTGPlus
 		void setVertexPosition(uint32_t index, float x, float y, float z) noexcept;
 		void setVertexCoords(uint32_t index, float u, float v) noexcept;
 		void setVertexColor(uint32_t index, Core::Color4B color) noexcept;
+		void setVertexSubColor(uint32_t index, Core::Color4B color) noexcept;
+		Core::Graphics::IRenderer::DrawVertex* getVertex(uint32_t index) noexcept { return &vertex_[index]; }
 	public:
 		bool draw(Core::Graphics::IRenderer* p_renderer);
 		bool draw(Core::Graphics::IRenderer* p_renderer, Core::Graphics::ITexture2D* p_texture);
