@@ -11,6 +11,7 @@ namespace LuaSTG
         constexpr auto G_CALLBACK_EngineEvent   = "EventFunc";
         constexpr auto G_CALLBACK_FocusLoseFunc = "FocusLoseFunc";
         constexpr auto G_CALLBACK_FocusGainFunc = "FocusGainFunc";
+        constexpr auto G_CALLBACK_ResizeFunc    = "ResizeFunc";
         
         enum class EngineEvent
         {

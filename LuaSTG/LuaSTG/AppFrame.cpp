@@ -589,6 +589,11 @@ void AppFrame::onUpdate()
 			lua_pushinteger(L, (lua_Integer)size.x);
 			lua_pushinteger(L, (lua_Integer)size.y);
 			SafeCallGlobalFunctionB(LuaSTG::LuaEngine::G_CALLBACK_EngineEvent, 3, 0);
+
+			lua_pushinteger(L, (lua_Integer)size.x);
+			lua_pushinteger(L, (lua_Integer)size.y);
+			if (!SafeCallGlobalFunctionB(LuaSTG::LuaEngine::G_CALLBACK_ResizeFunc, 2, 0))
+				m_pAppModel->requestExit();
 		}
 #endif // RESIZABLE_GAME_WINDOW
 
