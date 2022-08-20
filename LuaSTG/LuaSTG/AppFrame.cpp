@@ -180,6 +180,10 @@ bool AppFrame::ChangeVideoMode2(int width, int height, bool windowed, bool vsync
 			}
 			return swapchain->setExclusiveFullscreenMode(mode);
 		};
+#ifdef RESIZABLE_GAME_WINDOW
+		// Communicate size change back to Lua (without resizing swapchain a second time)
+		m_window_active_changed.fetch_or(0x10);
+#endif // RESIZABLE_GAME_WINDOW
 		if (hza == 0 || hzb == 0)
 		{
 			if (windowed)
@@ -518,22 +522,23 @@ void AppFrame::Run()noexcept
 void AppFrame::onWindowActive()
 {
 	platform::XInput::setEnable(true);
-	m_window_active_changed.fetch_or(0x1);
+	m_window_active_changed.fetch_or(0x01);
 }
 void AppFrame::onWindowInactive()
 {
 	platform::XInput::setEnable(false);
-	m_window_active_changed.fetch_or(0x2);
+	m_window_active_changed.fetch_or(0x02);
 }
 void AppFrame::onDeviceChange()
 {
-	m_window_active_changed.fetch_or(0x4);
+	m_window_active_changed.fetch_or(0x04);
 }
 
 #ifdef RESIZABLE_GAME_WINDOW
+// On a resize or maximize/restore operation
 void AppFrame::onWindowSizeChanged()
 {
-	m_window_active_changed.fetch_or(0x8);
+	m_window_active_changed.fetch_or(0x08);
 }
 #endif // RESIZABLE_GAME_WINDOW
 
@@ -547,7 +552,7 @@ void AppFrame::onUpdate()
 		ZoneScopedN("OnUpdate-Event");
 
 		int window_active_changed = m_window_active_changed.exchange(0);
-		if (window_active_changed & 0x2)
+		if (window_active_changed & 0x02)
 		{
 			if (m_DirectInput)
 				m_DirectInput->reset();
@@ -559,7 +564,7 @@ void AppFrame::onUpdate()
 			if (!SafeCallGlobalFunction(LuaSTG::LuaEngine::G_CALLBACK_FocusLoseFunc))
 				m_pAppModel->requestExit();
 		}
-		if (window_active_changed & 0x1)
+		if (window_active_changed & 0x01)
 		{
 			if (m_DirectInput)
 				m_DirectInput->reset();
@@ -571,19 +576,22 @@ void AppFrame::onUpdate()
 			if (!SafeCallGlobalFunction(LuaSTG::LuaEngine::G_CALLBACK_FocusGainFunc))
 				m_pAppModel->requestExit();
 		}
-		if (window_active_changed & 0x4)
+		if (window_active_changed & 0x04)
 		{
 			if (m_DirectInput)
 				m_DirectInput->refresh();
 		}
 #ifdef RESIZABLE_GAME_WINDOW
-		if (window_active_changed & 0x8)
+		if (window_active_changed & 0x18)
 		{
 			using namespace Core;
 			auto* window = m_pAppModel->getWindow();
-			auto* swapchain = m_pAppModel->getSwapChain();
 			Vector2I size = window->getSize();
-			swapchain->setWindowMode(size.x, size.y, false);
+			if (window_active_changed & 0x08)
+			{
+				auto* swapchain = m_pAppModel->getSwapChain();
+				swapchain->setWindowMode(size.x, size.y, false);
+			}
 
 			lua_pushinteger(L, (lua_Integer)LuaSTG::LuaEngine::EngineEvent::WindowResize);
 			lua_pushinteger(L, (lua_Integer)size.x);
@@ -592,7 +600,8 @@ void AppFrame::onUpdate()
 
 			lua_pushinteger(L, (lua_Integer)size.x);
 			lua_pushinteger(L, (lua_Integer)size.y);
-			if (!SafeCallGlobalFunctionB(LuaSTG::LuaEngine::G_CALLBACK_ResizeFunc, 2, 0))
+			lua_pushboolean(L, m_OptionWindowed);
+			if (!SafeCallGlobalFunctionB(LuaSTG::LuaEngine::G_CALLBACK_ResizeFunc, 3, 0))
 				m_pAppModel->requestExit();
 		}
 #endif // RESIZABLE_GAME_WINDOW
