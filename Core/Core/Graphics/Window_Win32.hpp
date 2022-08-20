@@ -34,7 +34,8 @@ namespace Core::Graphics
 		DWORD win32_window_style_ex{ 0 };
 		BOOL m_hidewindow{ TRUE };
 
-		BOOL win32_window_is_sizemove{ FALSE };
+		//BOOL win32_window_is_sizemove{ FALSE };
+		bool win32_window_is_maximized = false;
 
 		platform::WindowSizeMoveController m_sizemove;
 		platform::MonitorList m_monitors;
@@ -73,10 +74,12 @@ namespace Core::Graphics
 
 			WindowSizeMovePaint,
 			WindowDpiChanged,
-
+			
 			NativeWindowMessage,
 
 			DeviceChange,
+
+			WindowSizeChanged,
 		};
 		bool m_is_dispatch_event{ false };
 		std::vector<IWindowEventListener*> m_eventobj;

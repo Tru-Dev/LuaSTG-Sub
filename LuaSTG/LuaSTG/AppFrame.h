@@ -50,7 +50,11 @@ namespace LuaSTGPlus
 		
 		// 选项与值
 		bool m_OptionWindowed = true;
+#ifdef RESIZABLE_GAME_WINDOW
+		Core::Graphics::WindowFrameStyle m_OptionWindowStyle = Core::Graphics::WindowFrameStyle::Normal;
+#else
 		Core::Graphics::WindowFrameStyle m_OptionWindowStyle = Core::Graphics::WindowFrameStyle::Fixed;
+#endif // RESIZABLE_GAME_WINDOW
 		fuInt m_OptionFPSLimit = 60;
 		bool m_OptionVsync = false;
 		fcyVec2 m_OptionResolution = fcyVec2(640.f, 480.f);
@@ -242,6 +246,9 @@ namespace LuaSTGPlus
 		void onWindowActive();
 		void onWindowInactive();
 		void onDeviceChange();
+#ifdef RESIZABLE_GAME_WINDOW
+		void onWindowSizeChanged();
+#endif // RESIZABLE_GAME_WINDOW
 
 		void onUpdate();
 		void onRender();

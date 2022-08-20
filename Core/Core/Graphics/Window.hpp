@@ -18,6 +18,8 @@ namespace Core::Graphics
 
 		virtual void onDeviceChange() {};
 
+		virtual void onWindowSizeChanged() {};
+
 		struct NativeWindowMessageResult
 		{
 			intptr_t result;

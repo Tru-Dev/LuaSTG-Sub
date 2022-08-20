@@ -66,8 +66,27 @@ namespace Core::Graphics
 				dispatchEvent(EventType::WindowInactive);
 			}
 			break;
-		//case WM_SIZE:
-		//	break;
+		case WM_SIZE:
+			if (getFrameStyle() != WindowFrameStyle::None && (arg1 == SIZE_MAXIMIZED || (arg1 == SIZE_RESTORED && win32_window_is_maximized)))
+			{
+				win32_window_is_maximized = !win32_window_is_maximized;
+				RectI c_rect = getClientRect();
+				win32_window_width = c_rect.b.x - c_rect.a.x;
+				win32_window_height = c_rect.b.y - c_rect.a.y;
+				dispatchEvent(EventType::WindowSizeChanged);
+				return 0;
+			}
+			break;
+		case WM_EXITSIZEMOVE:
+			if (getFrameStyle() != WindowFrameStyle::None)
+			{
+				RectI c_rect = getClientRect();
+				win32_window_width = c_rect.b.x - c_rect.a.x;
+				win32_window_height = c_rect.b.y - c_rect.a.y;
+				dispatchEvent(EventType::WindowSizeChanged);
+				return 0;
+			}
+			break;
 		//case WM_ENTERSIZEMOVE:
 		//	win32_window_is_sizemove = TRUE;
 		//	InvalidateRect(window, NULL, FALSE); // 标记窗口区域为需要重新绘制，以便产生 WM_PAINT 消息
@@ -354,6 +373,12 @@ namespace Core::Graphics
 			for (auto& v : m_eventobj)
 			{
 				if (v) v->onDeviceChange();
+			}
+			break;
+		case EventType::WindowSizeChanged:
+			for (auto& v : m_eventobj)
+			{
+				if (v) v->onWindowSizeChanged();
 			}
 			break;
 		}

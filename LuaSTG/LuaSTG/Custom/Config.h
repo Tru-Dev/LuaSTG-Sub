@@ -20,3 +20,4 @@
 #define USING_CTRL_ENTER_SWITCH // allow ctrl+enter switch between windowed and fullscreen
 #define USING_DEAR_IMGUI
 #define USING_CONSOLE_OUTPUT
+#define RESIZABLE_GAME_WINDOW

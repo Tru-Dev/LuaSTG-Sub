@@ -352,7 +352,11 @@ bool AppFrame::Init()noexcept
 			auto* p_window = m_pAppModel->getWindow();
 			p_window->setSize(Vector2I((int32_t)m_OptionResolution.x, (int32_t)m_OptionResolution.y));
 			if (m_OptionWindowed)
+#ifdef RESIZABLE_GAME_WINDOW
+				p_window->setFrameStyle(Graphics::WindowFrameStyle::Normal);
+#else
 				p_window->setFrameStyle(Graphics::WindowFrameStyle::Fixed);
+#endif // RESIZABLE_GAME_WINDOW
 			else
 				p_window->setFrameStyle(Graphics::WindowFrameStyle::None);
 			p_window->setTitleText(m_OptionTitle);
@@ -526,6 +530,13 @@ void AppFrame::onDeviceChange()
 	m_window_active_changed.fetch_or(0x4);
 }
 
+#ifdef RESIZABLE_GAME_WINDOW
+void AppFrame::onWindowSizeChanged()
+{
+	m_window_active_changed.fetch_or(0x8);
+}
+#endif // RESIZABLE_GAME_WINDOW
+
 void AppFrame::onUpdate()
 {
 	m_fFPS = m_pAppModel->getFrameRateController()->getFPS();
@@ -565,6 +576,21 @@ void AppFrame::onUpdate()
 			if (m_DirectInput)
 				m_DirectInput->refresh();
 		}
+#ifdef RESIZABLE_GAME_WINDOW
+		if (window_active_changed & 0x8)
+		{
+			using namespace Core;
+			auto* window = m_pAppModel->getWindow();
+			auto* swapchain = m_pAppModel->getSwapChain();
+			Vector2I size = window->getSize();
+			swapchain->setWindowMode(size.x, size.y, false);
+
+			lua_pushinteger(L, (lua_Integer)LuaSTG::LuaEngine::EngineEvent::WindowResize);
+			lua_pushinteger(L, (lua_Integer)size.x);
+			lua_pushinteger(L, (lua_Integer)size.y);
+			SafeCallGlobalFunctionB(LuaSTG::LuaEngine::G_CALLBACK_EngineEvent, 3, 0);
+		}
+#endif // RESIZABLE_GAME_WINDOW
 
 		UpdateInput();
 	
