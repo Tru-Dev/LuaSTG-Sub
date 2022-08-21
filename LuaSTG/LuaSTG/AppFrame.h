@@ -54,6 +54,7 @@ namespace LuaSTGPlus
 		Core::Graphics::WindowFrameStyle m_OptionWindowStyle = Core::Graphics::WindowFrameStyle::Normal;
 #else
 		Core::Graphics::WindowFrameStyle m_OptionWindowStyle = Core::Graphics::WindowFrameStyle::Fixed;
+#endif
 		uint32_t m_OptionFPSLimit = 60;
 		bool m_OptionVsync = false;
 		Core::Vector2F m_OptionResolution = Core::Vector2F(640.f, 480.f);
