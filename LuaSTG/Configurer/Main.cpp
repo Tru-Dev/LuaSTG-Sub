@@ -595,16 +595,32 @@ struct Window
             if (file.is_open())
             {
                 file >> json;
-                luastg_config.adapter = json["gpu"].get<std::string>();
-                luastg_config.window_size.width = json["window_size"]["width"].get<int>();
-                luastg_config.window_size.height = json["window_size"]["height"].get<int>();
-                luastg_config.fullscreen_resolution.width = json["fullscreen_resolution"]["width"].get<int>();
-                luastg_config.fullscreen_resolution.height = json["fullscreen_resolution"]["height"].get<int>();
-                luastg_config.refresh_rate_numerator = json["refresh_rate_numerator"].get<int>();
-                luastg_config.refresh_rate_denominator = json["refresh_rate_denominator"].get<int>();
-                luastg_config.windowed = json["windowed"].get<bool>();
-                luastg_config.vsync = json["vsync"].get<bool>();
-                luastg_config.dgpu_trick = json["dgpu_trick"].get<bool>();
+                luastg_config.adapter = json.value("gpu", "");
+                if (json.contains("window_size"))
+                {
+                    luastg_config.window_size.width = json["window_size"].value("width", 1600);
+                    luastg_config.window_size.height = json["window_size"].value("height", 900);
+                }
+                else
+                {
+                    luastg_config.window_size.width = json.value("width", 1600);
+                    luastg_config.window_size.height = json.value("height", 900);
+                }
+                if (json.contains("fullscreen_resolution"))
+                {
+                    luastg_config.fullscreen_resolution.width = json["fullscreen_resolution"].value("width", 1920);
+                    luastg_config.fullscreen_resolution.height = json["fullscreen_resolution"].value("height", 1080);
+                }
+                else
+                {
+                    luastg_config.fullscreen_resolution.width = json.value("width", 1920);
+                    luastg_config.fullscreen_resolution.height = json.value("height", 1080);
+                }
+                luastg_config.refresh_rate_numerator = json.value("refresh_rate_numerator", 0);
+                luastg_config.refresh_rate_denominator = json.value("refresh_rate_denominator", 0);
+                luastg_config.windowed = json.value("windowed", true);
+                luastg_config.vsync = json.value("vsync", false);
+                luastg_config.dgpu_trick = json.value("dgpu_trick", false);
             }
         }
 
