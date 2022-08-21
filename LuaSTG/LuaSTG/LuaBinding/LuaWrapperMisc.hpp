@@ -94,9 +94,11 @@ namespace LuaSTGPlus
 			"",
 			"mul+alpha","mul+add","mul+rev","mul+sub",
 			"add+alpha","add+add","add+rev","add+sub",
+			"grad+alpha","grad+add","grad+rev","grad+sub",
 			"alpha+bal",
 			"mul+min","mul+max","mul+mul","mul+screen",
 			"add+min","add+max","add+mul","add+screen",
+			"grad+min","grad+max","grad+mul","grad+screen",
 			"one",
 		};
 		lua_pushstring(L, sc_sblendmodes[(int)blendmode]);

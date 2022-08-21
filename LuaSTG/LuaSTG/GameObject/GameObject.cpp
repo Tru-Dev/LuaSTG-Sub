@@ -138,6 +138,7 @@ namespace LuaSTGPlus
 #ifdef USING_ADVANCE_GAMEOBJECT_CLASS
 		blendmode = BlendMode::MulAlpha;
 		vertexcolor = 0xFFFFFFFF;
+		vertexsubcolor = 0xFFFFFFFF;
 #endif // USING_ADVANCE_GAMEOBJECT_CLASS
 	}
 	void GameObject::DirtReset()
@@ -179,6 +180,7 @@ namespace LuaSTGPlus
 #ifdef USING_ADVANCE_GAMEOBJECT_CLASS
 		blendmode = BlendMode::MulAlpha;
 		vertexcolor = 0xFFFFFFFF;
+		vertexsubcolor = 0xFFFFFFFF;
 #endif // USING_ADVANCE_GAMEOBJECT_CLASS
 	}
 	
@@ -444,10 +446,13 @@ namespace LuaSTGPlus
 						ResSprite* img = static_cast<ResSprite*>(res);
 						// backup
 						Core::Color4B color[4] = { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF };
+						Core::Color4B subcolor[4] = { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF };
 						img->GetSprite()->getColor(color);
+						img->GetSprite()->getSubColor(subcolor);
 						BlendMode blend = img->GetBlendMode();
 						// setup
 						img->GetSprite()->setColor(Core::Color4B(vertexcolor));
+						img->GetSprite()->setSubColor(Core::Color4B(vertexsubcolor));
 						img->SetBlendMode(blendmode);
 						LAPP.Render(
 							img,
@@ -459,6 +464,7 @@ namespace LuaSTGPlus
 						);
 						// restore
 						img->GetSprite()->setColor(color);
+						img->GetSprite()->setSubColor(subcolor);
 						img->SetBlendMode(blend);
 					} while (false);
 					break;
@@ -468,10 +474,13 @@ namespace LuaSTGPlus
 						uint32_t const idx = ani->GetSpriteIndexByTimer(ani_timer);
 						// backup
 						Core::Color4B color[4] = { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF };
+						Core::Color4B subcolor[4] = { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF };
 						ani->GetSprite(idx)->getColor(color);
+						ani->GetSprite(idx)->getSubColor(subcolor);
 						BlendMode blend = ani->GetBlendMode();
 						// setup
 						ani->GetSprite(idx)->setColor(Core::Color4B(vertexcolor));
+						ani->GetSprite(idx)->setSubColor(Core::Color4B(vertexsubcolor));
 						ani->SetBlendMode(blend);
 						LAPP.Render(
 							ani,
@@ -484,6 +493,7 @@ namespace LuaSTGPlus
 						);
 						// restore
 						ani->GetSprite(idx)->setColor(color);
+						ani->GetSprite(idx)->setSubColor(subcolor);
 						ani->SetBlendMode(blend);
 					} while (false);
 					break;
@@ -672,6 +682,36 @@ namespace LuaSTGPlus
 		case LuaSTG::GameObjectMember::_B:
 			if (luaclass.IsRenderClass)
 				lua_pushinteger(L, (lua_Integer)((uint8_t*)&vertexcolor)[0]);
+			else
+				lua_pushnil(L);
+			return 1;
+		case LuaSTG::GameObjectMember::_SUBCOLOR:
+			if (luaclass.IsRenderClass)
+				LuaWrapper::ColorWrapper::CreateAndPush(L, Core::Color4B(vertexsubcolor));
+			else
+				lua_pushnil(L);
+			return 1;
+		case LuaSTG::GameObjectMember::_SUBA:
+			if (luaclass.IsRenderClass)
+				lua_pushinteger(L, (lua_Integer)((uint8_t*)&vertexsubcolor)[3]);
+			else
+				lua_pushnil(L);
+			return 1;
+		case LuaSTG::GameObjectMember::_SUBR:
+			if (luaclass.IsRenderClass)
+				lua_pushinteger(L, (lua_Integer)((uint8_t*)&vertexsubcolor)[2]);
+			else
+				lua_pushnil(L);
+			return 1;
+		case LuaSTG::GameObjectMember::_SUBG:
+			if (luaclass.IsRenderClass)
+				lua_pushinteger(L, (lua_Integer)((uint8_t*)&vertexsubcolor)[1]);
+			else
+				lua_pushnil(L);
+			return 1;
+		case LuaSTG::GameObjectMember::_SUBB:
+			if (luaclass.IsRenderClass)
+				lua_pushinteger(L, (lua_Integer)((uint8_t*)&vertexsubcolor)[0]);
 			else
 				lua_pushnil(L);
 			return 1;
@@ -930,6 +970,36 @@ namespace LuaSTGPlus
 		case LuaSTG::GameObjectMember::_B:
 			if (luaclass.IsRenderClass)
 				((uint8_t*)&vertexcolor)[0] = (uint8_t)luaL_checkinteger(L, 3);
+			else
+				lua_rawset(L, 1);
+			return 0;
+		case LuaSTG::GameObjectMember::_SUBCOLOR:
+			if (luaclass.IsRenderClass)
+				vertexsubcolor = LuaWrapper::ColorWrapper::Cast(L, 3)->color();
+			else
+				lua_rawset(L, 1);
+			return 0;
+		case LuaSTG::GameObjectMember::_SUBA:
+			if (luaclass.IsRenderClass)
+				((uint8_t*)&vertexsubcolor)[3] = (uint8_t)luaL_checkinteger(L, 3);
+			else
+				lua_rawset(L, 1);
+			return 0;
+		case LuaSTG::GameObjectMember::_SUBR:
+			if (luaclass.IsRenderClass)
+				((uint8_t*)&vertexsubcolor)[2] = (uint8_t)luaL_checkinteger(L, 3);
+			else
+				lua_rawset(L, 1);
+			return 0;
+		case LuaSTG::GameObjectMember::_SUBG:
+			if (luaclass.IsRenderClass)
+				((uint8_t*)&vertexsubcolor)[1] = (uint8_t)luaL_checkinteger(L, 3);
+			else
+				lua_rawset(L, 1);
+			return 0;
+		case LuaSTG::GameObjectMember::_SUBB:
+			if (luaclass.IsRenderClass)
+				((uint8_t*)&vertexsubcolor)[0] = (uint8_t)luaL_checkinteger(L, 3);
 			else
 				lua_rawset(L, 1);
 			return 0;

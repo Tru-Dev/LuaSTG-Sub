@@ -70,7 +70,10 @@ namespace LuaSTGPlus
     {
         vertex_[index].color = color.color();
     }
-
+    void Mesh::setVertexSubColor(uint32_t const index, Core::Color4B const color) noexcept
+    {
+        vertex_[index].subcolor = color.color();
+    }
     bool Mesh::draw(Core::Graphics::IRenderer* p_renderer)
     {
         return p_renderer->drawRaw(

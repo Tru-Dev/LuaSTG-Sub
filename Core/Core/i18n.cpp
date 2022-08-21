@@ -6,7 +6,7 @@ struct i18n_entry_t
 	std::string_view const en_us;
 };
 
-static i18n_lang_t g_i18n_lang = i18n_lang_t::zh_cn;
+static i18n_lang_t g_i18n_lang = i18n_lang_t::en_us;
 static std::unordered_map<std::string_view, i18n_entry_t> const g_i18n_map = {
 	{"[core].system_call_failed_f",{
 		.zh_cn = "[core] {} 调用失败",

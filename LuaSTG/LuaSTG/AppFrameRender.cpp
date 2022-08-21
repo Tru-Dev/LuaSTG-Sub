@@ -78,6 +78,38 @@ namespace LuaSTGPlus
             ctx->setVertexColorBlendState(IRenderer::VertexColorBlendState::Add);
             ctx->setBlendState(IRenderer::BlendState::Screen);
             break;
+        case LuaSTGPlus::BlendMode::GradAlpha:
+            ctx->setVertexColorBlendState(IRenderer::VertexColorBlendState::Grad);
+            ctx->setBlendState(IRenderer::BlendState::Alpha);
+            break;
+        case LuaSTGPlus::BlendMode::GradAdd:
+            ctx->setVertexColorBlendState(IRenderer::VertexColorBlendState::Grad);
+            ctx->setBlendState(IRenderer::BlendState::Add);
+            break;
+        case LuaSTGPlus::BlendMode::GradRev:
+            ctx->setVertexColorBlendState(IRenderer::VertexColorBlendState::Grad);
+            ctx->setBlendState(IRenderer::BlendState::RevSub);
+            break;
+        case LuaSTGPlus::BlendMode::GradSub:
+            ctx->setVertexColorBlendState(IRenderer::VertexColorBlendState::Grad);
+            ctx->setBlendState(IRenderer::BlendState::Sub);
+            break;
+        case LuaSTGPlus::BlendMode::GradMin:
+            ctx->setVertexColorBlendState(IRenderer::VertexColorBlendState::Grad);
+            ctx->setBlendState(IRenderer::BlendState::Min);
+            break;
+        case LuaSTGPlus::BlendMode::GradMax:
+            ctx->setVertexColorBlendState(IRenderer::VertexColorBlendState::Grad);
+            ctx->setBlendState(IRenderer::BlendState::Max);
+            break;
+        case LuaSTGPlus::BlendMode::GradMutiply:
+            ctx->setVertexColorBlendState(IRenderer::VertexColorBlendState::Grad);
+            ctx->setBlendState(IRenderer::BlendState::Mul);
+            break;
+        case LuaSTGPlus::BlendMode::GradScreen:
+            ctx->setVertexColorBlendState(IRenderer::VertexColorBlendState::Grad);
+            ctx->setBlendState(IRenderer::BlendState::Screen);
+            break;
         case LuaSTGPlus::BlendMode::One:
             ctx->setVertexColorBlendState(IRenderer::VertexColorBlendState::Mul);
             ctx->setBlendState(IRenderer::BlendState::One);

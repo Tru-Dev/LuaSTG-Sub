@@ -19,6 +19,7 @@ struct VS_Input
     float3 pos : POSITION0;
     float2 uv  : TEXCOORD0;
     float4 col : COLOR0;
+    float4 subcol : COLOR1;
 };
 struct VS_Output
 {
@@ -28,6 +29,7 @@ struct VS_Output
 #endif
     float2 uv  : TEXCOORD0;
     float4 col : COLOR0;
+    float4 subcol : COLOR1;
 };
 
 VS_Output main(VS_Input input)
@@ -44,6 +46,7 @@ VS_Output main(VS_Input input)
 #endif
     output.uv = input.uv;
     output.col = input.col;
+	output.subcol = input.subcol;
     // TODO: 顶点颜色转到线性颜色空间
     //output.col = pow(input.col, 1.0f / 2.2f);
 
@@ -81,6 +84,7 @@ struct PS_Input
 #endif
     float2 uv  : TEXCOORD0;
     float4 col : COLOR0;
+    float4 subcol : COLOR1;
 };
 
 struct PS_Output
@@ -100,6 +104,14 @@ PS_Output main(PS_Input input)
     // 顶点色混合，顶点色是直通颜色（没有预乘 alpha）；最终的结果是预乘 alpha 的
     #if defined(VERTEX_COLOR_BLEND_MUL)
         color = color * input.col;
+        #if !defined(PREMUL_ALPHA)
+            color.rgb *= color.a;
+        #else // PREMUL_ALPHA
+            color.rgb *= input.col.a; // 需要少乘以纹理色的 alpha
+        #endif
+    #elif defined(VERTEX_COLOR_BLEND_GRAD)
+        color.rgb = lerp(input.col.rgb, input.subcol.rgb, color.g);
+		color.a *= input.col.a;
         #if !defined(PREMUL_ALPHA)
             color.rgb *= color.a;
         #else // PREMUL_ALPHA
@@ -272,11 +284,14 @@ namespace Core::Graphics
 			D3D11_INPUT_ELEMENT_DESC layout_[] =
 			{
 				// DrawVertex2D
-				{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0 , D3D11_INPUT_PER_VERTEX_DATA, 0 },
-				{ "COLOR",    0, DXGI_FORMAT_B8G8R8A8_UNORM , 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-				{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT   , 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+				{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(struct DrawVertex, x) , D3D11_INPUT_PER_VERTEX_DATA, 0 },
+				{ "COLOR",    0, DXGI_FORMAT_B8G8R8A8_UNORM , 0, offsetof(struct DrawVertex, color), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+				{ "COLOR",    1, DXGI_FORMAT_B8G8R8A8_UNORM , 0, offsetof(struct DrawVertex, subcolor), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+				{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT   , 0, offsetof(struct DrawVertex, u), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			};
-			hr = gHR = m_device->GetD3D11Device()->CreateInputLayout(layout_, 3, blob_->GetBufferPointer(), blob_->GetBufferSize(), &_input_layout);
+			hr = gHR = m_device->GetD3D11Device()->CreateInputLayout(layout_, 4, blob_->GetBufferPointer(), blob_->GetBufferSize(), &_input_layout);
+
+			spdlog::warn("[core] COMPILING VERTEX SHADER ");
 			if (FAILED(hr))
 				return false;
 		}
@@ -295,6 +310,7 @@ namespace Core::Graphics
 					return false;
 				hr = gHR = m_device->GetD3D11Device()->CreatePixelShader(ps_blob_->GetBufferPointer(), ps_blob_->GetBufferSize(), NULL,
 					&_pixel_shader[IDX(v)][IDX(f)][IDX(t)]);
+				spdlog::warn("[core] COMPILING PIXEL SHADER");
 				if (FAILED(hr))
 					return false;
 				M_D3D_SET_DEBUG_NAME_SIMPLE(_pixel_shader[IDX(v)][IDX(f)][IDX(t)].Get());
@@ -319,11 +335,16 @@ namespace Core::Graphics
 				{ "VERTEX_COLOR_BLEND_MUL", "1"},
 				{ NULL, NULL },
 			};
+			const D3D_SHADER_MACRO ps_def_grad0_[] = {
+				{ "VERTEX_COLOR_BLEND_GRAD", "1"},
+				{ NULL, NULL },
+			};
 
 			loadPS(VertexColorBlendState::Zero, FogState::Disable, TextureAlphaType::Normal, ps_def_zero_);
 			loadPS(VertexColorBlendState::One, FogState::Disable, TextureAlphaType::Normal, ps_def_one0_);
 			loadPS(VertexColorBlendState::Add, FogState::Disable, TextureAlphaType::Normal, ps_def_add0_);
 			loadPS(VertexColorBlendState::Mul, FogState::Disable, TextureAlphaType::Normal, ps_def_mul0_);
+			loadPS(VertexColorBlendState::Grad, FogState::Disable, TextureAlphaType::Normal, ps_def_grad0_);
 
 			const D3D_SHADER_MACRO ps_def_zero_line_[] = {
 				{ "VERTEX_COLOR_BLEND_ZERO", "1"},
@@ -349,11 +370,18 @@ namespace Core::Graphics
 				{ "FOG_LINEAR", "1"},
 				{ NULL, NULL },
 			};
+			const D3D_SHADER_MACRO ps_def_grad0_line_[] = {
+				{ "VERTEX_COLOR_BLEND_GRAD", "1"},
+				{ "FOG_ENABLE", "1"},
+				{ "FOG_LINEAR", "1"},
+				{ NULL, NULL },
+			};
 
 			loadPS(VertexColorBlendState::Zero, FogState::Linear, TextureAlphaType::Normal, ps_def_zero_line_);
 			loadPS(VertexColorBlendState::One, FogState::Linear, TextureAlphaType::Normal, ps_def_one0_line_);
 			loadPS(VertexColorBlendState::Add, FogState::Linear, TextureAlphaType::Normal, ps_def_add0_line_);
 			loadPS(VertexColorBlendState::Mul, FogState::Linear, TextureAlphaType::Normal, ps_def_mul0_line_);
+			loadPS(VertexColorBlendState::Grad, FogState::Linear, TextureAlphaType::Normal, ps_def_grad0_line_);
 
 			const D3D_SHADER_MACRO ps_def_zero_exp0_[] = {
 				{ "VERTEX_COLOR_BLEND_ZERO", "1"},
@@ -379,11 +407,18 @@ namespace Core::Graphics
 				{ "FOG_EXP", "1"},
 				{ NULL, NULL },
 			};
+			const D3D_SHADER_MACRO ps_def_grad0_exp0_[] = {
+				{ "VERTEX_COLOR_BLEND_GRAD", "1"},
+				{ "FOG_ENABLE", "1"},
+				{ "FOG_EXP", "1"},
+				{ NULL, NULL },
+			};
 
 			loadPS(VertexColorBlendState::Zero, FogState::Exp, TextureAlphaType::Normal, ps_def_zero_exp0_);
 			loadPS(VertexColorBlendState::One, FogState::Exp, TextureAlphaType::Normal, ps_def_one0_exp0_);
 			loadPS(VertexColorBlendState::Add, FogState::Exp, TextureAlphaType::Normal, ps_def_add0_exp0_);
 			loadPS(VertexColorBlendState::Mul, FogState::Exp, TextureAlphaType::Normal, ps_def_mul0_exp0_);
+			loadPS(VertexColorBlendState::Grad, FogState::Exp, TextureAlphaType::Normal, ps_def_grad0_exp0_);
 
 			const D3D_SHADER_MACRO ps_def_zero_exp2_[] = {
 				{ "VERTEX_COLOR_BLEND_ZERO", "1"},
@@ -409,11 +444,18 @@ namespace Core::Graphics
 				{ "FOG_EXP2", "1"},
 				{ NULL, NULL },
 			};
+			const D3D_SHADER_MACRO ps_def_grad0_exp2_[] = {
+				{ "VERTEX_COLOR_BLEND_GRAD", "1"},
+				{ "FOG_ENABLE", "1"},
+				{ "FOG_EXP2", "1"},
+				{ NULL, NULL },
+			};
 
 			loadPS(VertexColorBlendState::Zero, FogState::Exp2, TextureAlphaType::Normal, ps_def_zero_exp2_);
 			loadPS(VertexColorBlendState::One, FogState::Exp2, TextureAlphaType::Normal, ps_def_one0_exp2_);
 			loadPS(VertexColorBlendState::Add, FogState::Exp2, TextureAlphaType::Normal, ps_def_add0_exp2_);
 			loadPS(VertexColorBlendState::Mul, FogState::Exp2, TextureAlphaType::Normal, ps_def_mul0_exp2_);
+			loadPS(VertexColorBlendState::Grad, FogState::Exp2, TextureAlphaType::Normal, ps_def_grad0_exp2_);
 		}
 
 		/* pixel shader premul alpha set */ {
@@ -456,11 +498,17 @@ namespace Core::Graphics
 				{ "PREMUL_ALPHA", "1"},
 				{ NULL, NULL },
 			};
+			const D3D_SHADER_MACRO ps_def_grad0_nfog_mula_[] = {
+				{ "VERTEX_COLOR_BLEND_GRAD", "1"},
+				{ "PREMUL_ALPHA", "1"},
+				{ NULL, NULL },
+			};
 
 			loadPS(VertexColorBlendState::Zero, FogState::Disable, TextureAlphaType::PremulAlpha, ps_def_zero_nfog_mula_);
 			loadPS(VertexColorBlendState::One, FogState::Disable, TextureAlphaType::PremulAlpha, ps_def_one0_nfog_mula_);
 			loadPS(VertexColorBlendState::Add, FogState::Disable, TextureAlphaType::PremulAlpha, ps_def_add0_nfog_mula_);
 			loadPS(VertexColorBlendState::Mul, FogState::Disable, TextureAlphaType::PremulAlpha, ps_def_mul0_nfog_mula_);
+			loadPS(VertexColorBlendState::Grad, FogState::Disable, TextureAlphaType::PremulAlpha, ps_def_grad0_nfog_mula_);
 
 			const D3D_SHADER_MACRO ps_def_zero_line_mula_[] = {
 				{ "VERTEX_COLOR_BLEND_ZERO", "1"},
@@ -490,11 +538,19 @@ namespace Core::Graphics
 				{ "PREMUL_ALPHA", "1"},
 				{ NULL, NULL },
 			};
+			const D3D_SHADER_MACRO ps_def_grad0_line_mula_[] = {
+				{ "VERTEX_COLOR_BLEND_GRAD", "1"},
+				{ "FOG_ENABLE", "1"},
+				{ "FOG_LINEAR", "1"},
+				{ "PREMUL_ALPHA", "1"},
+				{ NULL, NULL },
+			};
 
 			loadPS(VertexColorBlendState::Zero, FogState::Linear, TextureAlphaType::PremulAlpha, ps_def_zero_line_mula_);
 			loadPS(VertexColorBlendState::One, FogState::Linear, TextureAlphaType::PremulAlpha, ps_def_one0_line_mula_);
 			loadPS(VertexColorBlendState::Add, FogState::Linear, TextureAlphaType::PremulAlpha, ps_def_add0_line_mula_);
 			loadPS(VertexColorBlendState::Mul, FogState::Linear, TextureAlphaType::PremulAlpha, ps_def_mul0_line_mula_);
+			loadPS(VertexColorBlendState::Grad, FogState::Linear, TextureAlphaType::PremulAlpha, ps_def_grad0_line_mula_);
 
 			const D3D_SHADER_MACRO ps_def_zero_exp0_mula_[] = {
 				{ "VERTEX_COLOR_BLEND_ZERO", "1"},
@@ -524,11 +580,19 @@ namespace Core::Graphics
 				{ "PREMUL_ALPHA", "1"},
 				{ NULL, NULL },
 			};
+			const D3D_SHADER_MACRO ps_def_grad0_exp0_mula_[] = {
+				{ "VERTEX_COLOR_BLEND_GRAD", "1"},
+				{ "FOG_ENABLE", "1"},
+				{ "FOG_EXP", "1"},
+				{ "PREMUL_ALPHA", "1"},
+				{ NULL, NULL },
+			};
 
 			loadPS(VertexColorBlendState::Zero, FogState::Exp, TextureAlphaType::PremulAlpha, ps_def_zero_exp0_mula_);
 			loadPS(VertexColorBlendState::One, FogState::Exp, TextureAlphaType::PremulAlpha, ps_def_one0_exp0_mula_);
 			loadPS(VertexColorBlendState::Add, FogState::Exp, TextureAlphaType::PremulAlpha, ps_def_add0_exp0_mula_);
 			loadPS(VertexColorBlendState::Mul, FogState::Exp, TextureAlphaType::PremulAlpha, ps_def_mul0_exp0_mula_);
+			loadPS(VertexColorBlendState::Grad, FogState::Exp, TextureAlphaType::PremulAlpha, ps_def_grad0_exp0_mula_);
 
 			const D3D_SHADER_MACRO ps_def_zero_exp2_mula_[] = {
 				{ "VERTEX_COLOR_BLEND_ZERO", "1"},
@@ -558,11 +622,19 @@ namespace Core::Graphics
 				{ "PREMUL_ALPHA", "1"},
 				{ NULL, NULL },
 			};
+			const D3D_SHADER_MACRO ps_def_grad0_exp2_mula_[] = {
+				{ "VERTEX_COLOR_BLEND_GRAD", "1"},
+				{ "FOG_ENABLE", "1"},
+				{ "FOG_EXP2", "1"},
+				{ "PREMUL_ALPHA", "1"},
+				{ NULL, NULL },
+			};
 
 			loadPS(VertexColorBlendState::Zero, FogState::Exp2, TextureAlphaType::PremulAlpha, ps_def_zero_exp2_mula_);
 			loadPS(VertexColorBlendState::One, FogState::Exp2, TextureAlphaType::PremulAlpha, ps_def_one0_exp2_mula_);
 			loadPS(VertexColorBlendState::Add, FogState::Exp2, TextureAlphaType::PremulAlpha, ps_def_add0_exp2_mula_);
 			loadPS(VertexColorBlendState::Mul, FogState::Exp2, TextureAlphaType::PremulAlpha, ps_def_mul0_exp2_mula_);
+			loadPS(VertexColorBlendState::Grad, FogState::Exp2, TextureAlphaType::PremulAlpha, ps_def_grad0_exp2_mula_);
 		}
 
 		return true;

@@ -45,10 +45,10 @@ namespace Core::Graphics
 		m_renderer->setTexture(m_texture.get());
 
 		IRenderer::DrawVertex const vert[4] = {
-			IRenderer::DrawVertex(rc.a.x, rc.a.y, m_z, m_uv.a.x, m_uv.a.y, m_color[0].color()),
-			IRenderer::DrawVertex(rc.b.x, rc.a.y, m_z, m_uv.b.x, m_uv.a.y, m_color[1].color()),
-			IRenderer::DrawVertex(rc.b.x, rc.b.y, m_z, m_uv.b.x, m_uv.b.y, m_color[2].color()),
-			IRenderer::DrawVertex(rc.a.x, rc.b.y, m_z, m_uv.a.x, m_uv.b.y, m_color[3].color()),
+			IRenderer::DrawVertex(rc.a.x, rc.a.y, m_z, m_uv.a.x, m_uv.a.y, m_color[0].color(), m_subcolor[0].color()),
+			IRenderer::DrawVertex(rc.b.x, rc.a.y, m_z, m_uv.b.x, m_uv.a.y, m_color[1].color(), m_subcolor[1].color()),
+			IRenderer::DrawVertex(rc.b.x, rc.b.y, m_z, m_uv.b.x, m_uv.b.y, m_color[2].color(), m_subcolor[2].color()),
+			IRenderer::DrawVertex(rc.a.x, rc.b.y, m_z, m_uv.a.x, m_uv.b.y, m_color[3].color(), m_subcolor[3].color()),
 		};
 
 		m_renderer->drawQuad(vert);
@@ -58,10 +58,10 @@ namespace Core::Graphics
 		m_renderer->setTexture(m_texture.get());
 
 		IRenderer::DrawVertex const vert[4] = {
-			IRenderer::DrawVertex(p1.x, p1.y, p1.z, m_uv.a.x, m_uv.a.y, m_color[0].color()),
-			IRenderer::DrawVertex(p2.x, p2.y, p2.z, m_uv.b.x, m_uv.a.y, m_color[1].color()),
-			IRenderer::DrawVertex(p3.x, p3.y, p3.z, m_uv.b.x, m_uv.b.y, m_color[2].color()),
-			IRenderer::DrawVertex(p4.x, p4.y, p4.z, m_uv.a.x, m_uv.b.y, m_color[3].color()),
+			IRenderer::DrawVertex(p1.x, p1.y, p1.z, m_uv.a.x, m_uv.a.y, m_color[0].color(), m_subcolor[0].color()),
+			IRenderer::DrawVertex(p2.x, p2.y, p2.z, m_uv.b.x, m_uv.a.y, m_color[1].color(), m_subcolor[1].color()),
+			IRenderer::DrawVertex(p3.x, p3.y, p3.z, m_uv.b.x, m_uv.b.y, m_color[2].color(), m_subcolor[2].color()),
+			IRenderer::DrawVertex(p4.x, p4.y, p4.z, m_uv.a.x, m_uv.b.y, m_color[3].color(), m_subcolor[3].color()),
 		};
 
 		m_renderer->drawQuad(vert);
@@ -96,10 +96,10 @@ namespace Core::Graphics
 		);
 		
 		IRenderer::DrawVertex const vert[4] = {
-			IRenderer::DrawVertex(pos.x + rect.a.x, pos.y + rect.a.y, m_z, m_uv.a.x, m_uv.a.y, m_color[0].color()),
-			IRenderer::DrawVertex(pos.x + rect.b.x, pos.y + rect.a.y, m_z, m_uv.b.x, m_uv.a.y, m_color[1].color()),
-			IRenderer::DrawVertex(pos.x + rect.b.x, pos.y + rect.b.y, m_z, m_uv.b.x, m_uv.b.y, m_color[2].color()),
-			IRenderer::DrawVertex(pos.x + rect.a.x, pos.y + rect.b.y, m_z, m_uv.a.x, m_uv.b.y, m_color[3].color()),
+			IRenderer::DrawVertex(pos.x + rect.a.x, pos.y + rect.a.y, m_z, m_uv.a.x, m_uv.a.y, m_color[0].color(), m_subcolor[0].color()),
+			IRenderer::DrawVertex(pos.x + rect.b.x, pos.y + rect.a.y, m_z, m_uv.b.x, m_uv.a.y, m_color[1].color(), m_subcolor[1].color()),
+			IRenderer::DrawVertex(pos.x + rect.b.x, pos.y + rect.b.y, m_z, m_uv.b.x, m_uv.b.y, m_color[2].color(), m_subcolor[2].color()),
+			IRenderer::DrawVertex(pos.x + rect.a.x, pos.y + rect.b.y, m_z, m_uv.a.x, m_uv.b.y, m_color[3].color(), m_subcolor[3].color()),
 		};
 
 		m_renderer->drawQuad(vert);
@@ -122,10 +122,10 @@ namespace Core::Graphics
 		);
 
 		IRenderer::DrawVertex vert[4] = {
-			IRenderer::DrawVertex(rect.a.x, rect.a.y, m_z, m_uv.a.x, m_uv.a.y, m_color[0].color()),
-			IRenderer::DrawVertex(rect.b.x, rect.a.y, m_z, m_uv.b.x, m_uv.a.y, m_color[1].color()),
-			IRenderer::DrawVertex(rect.b.x, rect.b.y, m_z, m_uv.b.x, m_uv.b.y, m_color[2].color()),
-			IRenderer::DrawVertex(rect.a.x, rect.b.y, m_z, m_uv.a.x, m_uv.b.y, m_color[3].color()),
+			IRenderer::DrawVertex(rect.a.x, rect.a.y, m_z, m_uv.a.x, m_uv.a.y, m_color[0].color(), m_subcolor[0].color()),
+			IRenderer::DrawVertex(rect.b.x, rect.a.y, m_z, m_uv.b.x, m_uv.a.y, m_color[1].color(), m_subcolor[1].color()),
+			IRenderer::DrawVertex(rect.b.x, rect.b.y, m_z, m_uv.b.x, m_uv.b.y, m_color[2].color(), m_subcolor[2].color()),
+			IRenderer::DrawVertex(rect.a.x, rect.b.y, m_z, m_uv.a.x, m_uv.b.y, m_color[3].color(), m_subcolor[3].color()),
 		};
 
 		float const sinv = std::sinf(rotation);
@@ -168,6 +168,10 @@ namespace Core::Graphics
 			right->m_color[1] = m_color[1];
 			right->m_color[2] = m_color[2];
 			right->m_color[3] = m_color[3];
+			right->m_subcolor[0] = m_subcolor[0];
+			right->m_subcolor[1] = m_subcolor[1];
+			right->m_subcolor[2] = m_subcolor[2];
+			right->m_subcolor[3] = m_subcolor[3];
 			return true;
 		}
 		catch (...)
@@ -187,6 +191,10 @@ namespace Core::Graphics
 		m_color[1] = Color4B(0xFFFFFFFFu);
 		m_color[2] = Color4B(0xFFFFFFFFu);
 		m_color[3] = Color4B(0xFFFFFFFFu);
+		m_subcolor[0] = Color4B(0xFFFFFFFFu);
+		m_subcolor[1] = Color4B(0xFFFFFFFFu);
+		m_subcolor[2] = Color4B(0xFFFFFFFFu);
+		m_subcolor[3] = Color4B(0xFFFFFFFFu);
 		Vector2U const size = m_texture->getSize();
 		m_rect = RectF(0.0f, 0.0f, (float)size.x, (float)size.y);
 		m_center = Vector2F(m_rect.b.x * 0.5f, m_rect.b.y * 0.5f);

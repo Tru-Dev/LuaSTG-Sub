@@ -85,6 +85,7 @@ namespace LuaSTGPlus
 	#ifdef USING_ADVANCE_GAMEOBJECT_CLASS
 		BlendMode blendmode;			// [4] 混合模式
 		uint32_t vertexcolor;			// [4] 顶点颜色
+		uint32_t vertexsubcolor;			// [4] 顶点颜色
 	#endif // USING_ADVANCE_GAMEOBJECT_CLASS
 		lua_Integer ani_timer;			// [P] [只读] 动画自增计数器
 		uint8_t hide;					// [1] 不渲染

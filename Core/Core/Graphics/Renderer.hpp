@@ -29,8 +29,9 @@ namespace Core::Graphics
 			One,
 			Add,
 			Mul,
+			Grad,
 
-			MAX_INDEX = Mul,
+			MAX_INDEX = Grad,
 			MAX_COUNT,
 		};
 		enum class FogState : uint8_t
@@ -105,15 +106,18 @@ namespace Core::Graphics
 		{
 			float x, y, z;
 			uint32_t color;
+			uint32_t subcolor;
 			float u, v;
 
-			DrawVertex() : x(0.0f), y(0.0f), z(0.0f), u(0.0f), v(0.0f), color(0u) {}
+			DrawVertex() : x(0.0f), y(0.0f), z(0.0f), u(0.0f), v(0.0f), color(0u), subcolor(0u) {}
 			DrawVertex(float const x_, float const y_, float const z_, float const u_, float const v_, uint32_t const c_)
-				: x(x_), y(y_), z(z_), u(u_), v(v_), color(c_) {}
+				: x(x_), y(y_), z(z_), u(u_), v(v_), color(c_), subcolor(0xFFFFFFFFu) {}
+			DrawVertex(float const x_, float const y_, float const z_, float const u_, float const v_, uint32_t const c_, uint32_t const sc_)
+				: x(x_), y(y_), z(z_), u(u_), v(v_), color(c_), subcolor(sc_) {}
 			DrawVertex(float const x_, float const y_, float const z_, float const u_, float const v_)
-				: x(x_), y(y_), z(z_), u(u_), v(v_), color(0xFFFFFFFFu) {}
+				: x(x_), y(y_), z(z_), u(u_), v(v_), color(0xFFFFFFFFu), subcolor(0xFFFFFFFFu) {}
 			DrawVertex(float const x_, float const y_, float const u_, float const v_)
-				: x(x_), y(y_), z(0.5f), u(u_), v(v_), color(0xFFFFFFFFu) {} // TODO: z = 0.0f or z = 0.5f ?
+				: x(x_), y(y_), z(0.5f), u(u_), v(v_), color(0xFFFFFFFFu), subcolor(0xFFFFFFFFu) {} // TODO: z = 0.0f or z = 0.5f ?
 		};
 		using DrawIndex = uint16_t;
 

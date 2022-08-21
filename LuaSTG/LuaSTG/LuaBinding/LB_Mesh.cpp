@@ -113,6 +113,49 @@ namespace LuaSTGPlus::LuaWrapper
 				self->setVertexColor(index, color);
 				return 0;
 			}
+			static int setVertexSubColor(lua_State* L) noexcept
+			{
+				Mesh* self = Cast(L, 1);
+				uint32_t const index = luaL_checki_uint32(L, 2);
+				Core::Color4B const color(to_color32(L, 3));
+				self->setVertexSubColor(index, color);
+				return 0;
+			}
+			static int getVertexPosition(lua_State* L) noexcept
+			{
+				Mesh* self = Cast(L, 1);
+				uint32_t const index = luaL_checki_uint32(L, 2);
+				Core::Graphics::IRenderer::DrawVertex& vert = *self->getVertex(index);
+				lua_pushnumber(L, vert.x);
+				lua_pushnumber(L, vert.y);
+				lua_pushnumber(L, vert.z);
+				return 3;
+			}
+			static int getVertexCoords(lua_State* L) noexcept
+			{
+				Mesh* self = Cast(L, 1);
+				uint32_t const index = luaL_checki_uint32(L, 2);
+				Core::Graphics::IRenderer::DrawVertex& vert = *self->getVertex(index);
+				lua_pushnumber(L, vert.u);
+				lua_pushnumber(L, vert.v);
+				return 2;
+			}
+			static int getVertexColor(lua_State* L) noexcept
+			{
+				Mesh* self = Cast(L, 1);
+				uint32_t const index = luaL_checki_uint32(L, 2);
+				Core::Graphics::IRenderer::DrawVertex& vert = *self->getVertex(index);
+				ColorWrapper::CreateAndPush(L, vert.color);
+				return 1;
+			}
+			static int getVertexSubColor(lua_State* L) noexcept
+			{
+				Mesh* self = Cast(L, 1);
+				uint32_t const index = luaL_checki_uint32(L, 2);
+				Core::Graphics::IRenderer::DrawVertex& vert = *self->getVertex(index);
+				ColorWrapper::CreateAndPush(L, vert.subcolor);
+				return 1;
+			}
 
 			static int __gc(lua_State* L) noexcept
 			{
@@ -149,6 +192,11 @@ namespace LuaSTGPlus::LuaWrapper
 			{ "setVertexPosition", &Binding::setVertexPosition },
 			{ "setVertexCoords", &Binding::setVertexCoords },
 			{ "setVertexColor", &Binding::setVertexColor },
+			{ "setVertexSubColor", &Binding::setVertexSubColor },
+			{ "getVertexPosition", &Binding::getVertexPosition },
+			{ "getVertexCoords", &Binding::getVertexCoords },
+			{ "getVertexColor", &Binding::getVertexColor },
+			{ "getVertexSubColor", &Binding::getVertexSubColor },
 			{ NULL, NULL },
 		};
 
