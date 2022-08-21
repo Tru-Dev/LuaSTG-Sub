@@ -313,7 +313,7 @@ bool GameObjectBentLaser::Update(float x, float y, float rot, int length, float 
 	node.active = active;
 
 	// 变化几乎可以忽略不计，我们可以直接修改最新的节点
-	if (!m_Queue.IsEmpty() && (node.pos - m_Queue.Back().pos).length() <= std::numeric_limits<fFloat>::min())
+	if (!m_Queue.IsEmpty() && (node.pos - m_Queue.Back().pos).length() <= std::numeric_limits<float>::min())
 	{
 		// 移除多余的节点，保证长度在 length 范围内
 		while (m_Queue.Size() >= (size_t)length)
@@ -390,7 +390,7 @@ bool GameObjectBentLaser::Update(float x, float y, float rot, int length, float 
 			node.dis = 0.0f;
 			m_fLength = 0.0f;
 			// 【即将废弃】计算朝向
-			//fcyVec2 const vec_((fFloat)p->vy, (fFloat)p->vx);
+			//Core::Vector2F const vec_((float)p->vy, (float)p->vx);
 			//if (vec_.Length() > std::numeric_limits<float>::min())
 			//{
 			//	node.rot = vec_.CalcuAngle(); // 使用速度方向作为节点朝向
@@ -572,7 +572,7 @@ void GameObjectBentLaser::RenderCollider(Core::Color4B fillColor) noexcept
 			if (!last.active) {
 				float df = n.dis;
 				if (df > n.half_width) {
-					fcyVec2 c = (last.pos + n.pos) * 0.5;
+					Core::Vector2F c = (last.pos + n.pos) * 0.5;
 					testObjA.x = c.x;
 					testObjA.y = c.y;
 					testObjA.rect = true;
@@ -626,7 +626,7 @@ bool GameObjectBentLaser::CollisionCheck(float x, float y, float rot, float a, f
 			if (!last.active) {
 				float df = n.dis;
 				if (df > n.half_width) {
-					fcyVec2 c = (last.pos + n.pos) * 0.5;
+					Core::Vector2F c = (last.pos + n.pos) * 0.5;
 					testObjA.x = c.x;
 					testObjA.y = c.y;
 					testObjA.rect = true;
@@ -684,7 +684,7 @@ bool GameObjectBentLaser::CollisionCheckW(float x, float y, float rot, float a, 
 			if (!last.active) {
 				float df = n.dis;
 				if (df > width) {
-					fcyVec2 c = (last.pos + n.pos) * 0.5;
+					Core::Vector2F c = (last.pos + n.pos) * 0.5;
 					testObjA.x = c.x;
 					testObjA.y = c.y;
 					testObjA.rect = true;
@@ -712,7 +712,7 @@ bool GameObjectBentLaser::CollisionCheckW(float x, float y, float rot, float a, 
 
 bool GameObjectBentLaser::BoundCheck() noexcept
 {
-	fcyRect tBound = LPOOL.GetBound();
+	Core::RectF tBound = LPOOL.GetBound();
 	for (size_t i = 0u; i < m_Queue.Size(); i++)
 	{
 		LaserNode& n = m_Queue[i];
