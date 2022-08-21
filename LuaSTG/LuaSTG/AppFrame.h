@@ -57,7 +57,7 @@ namespace LuaSTGPlus
 #endif // RESIZABLE_GAME_WINDOW
 		fuInt m_OptionFPSLimit = 60;
 		bool m_OptionVsync = false;
-		fcyVec2 m_OptionResolution = fcyVec2(640.f, 480.f);
+		fcyVec2 m_OptionResolution = fcyVec2(1600.f, 900.f);
 		fuInt m_OptionRefreshRateA = 0;
 		fuInt m_OptionRefreshRateB = 0;
 		std::wstring m_OptionGPU;

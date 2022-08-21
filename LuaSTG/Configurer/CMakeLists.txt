@@ -12,6 +12,9 @@ target_sources(LuaSTGConfig PRIVATE
     SharedHeaders.h
     Main.cpp
     Configurer.manifest
+    resource.rc
+    resource.h
+    
 )
 target_link_libraries(LuaSTGConfig PRIVATE
     d3d11.lib

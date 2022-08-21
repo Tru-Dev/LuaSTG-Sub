@@ -40,7 +40,14 @@ namespace LuaSTGPlus
 #endif // RESIZABLE_GAME_WINDOW
                     Core::Graphics::WindowFrameStyle::None);
                 LAPP.SetVsync(config.vsync);
-                LAPP.SetResolution(config.width, config.height, config.refresh_rate_numerator, config.refresh_rate_denominator);
+                if (config.windowed)
+                {
+                    LAPP.SetResolution(config.windowed_width, config.windowed_height, config.refresh_rate_numerator, config.refresh_rate_denominator);
+                }
+                else
+                {
+                    LAPP.SetResolution(config.fullscreen_width, config.fullscreen_height, config.refresh_rate_numerator, config.refresh_rate_denominator);
+                }
                 if (!config.gpu.empty())
                 {
                     LAPP.SetPreferenceGPU(config.gpu.c_str(), config.dgpu_trick);

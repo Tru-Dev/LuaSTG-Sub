@@ -1,38 +1,42 @@
 ﻿#include "platform/HighDPI.hpp"
+#include "platform/WindowTheme.hpp"
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
+#include "resource.h"
 
 enum class Language : size_t
 {
     Chinese = 0,
     English = 1,
 };
-static Language i18n_map_index = Language::Chinese;
+static Language i18n_map_index = Language::English;
 static std::unordered_map<std::string_view, std::string_view> i18n_map[2] = {
     {
         {"window-title", "启动配置"},
         {"language-chinese", "简体中文"},
         {"language-english", "English"},
-        {"setting-language", "语言（Language）"},
+        {"setting-language", "语言"},
         {"setting-graphic-card", "显卡"},
-        {"setting-display-mode", "显示模式"},
+        {"setting-display-mode", "全屏显示模式"},
         {"setting-fullscreen", "全屏"},
         {"setting-vsync", "垂直同步"},
         {"setting-cancel", "取消并退出"},
         {"setting-save", "保存并退出"},
+        {"setting-window-size", "窗户尺寸"},
     },
     {
-        {"window-title", "Configuer"},
+        {"window-title", "LuaSTG Configuration"},
         {"language-chinese", "简体中文"},
         {"language-english", "English"},
-        {"setting-language", "Language (语言)"},
-        {"setting-graphic-card", "Graphic Card"},
-        {"setting-display-mode", "Display Mode"},
+        {"setting-language", "Language"},
+        {"setting-graphic-card", "Graphics Card"},
+        {"setting-display-mode", "Fullscreen Display Mode"},
         {"setting-fullscreen", "Fullscreen"},
         {"setting-vsync", "VSync"},
         {"setting-cancel", "Cancel & Exit"},
         {"setting-save", "Save & Exit"},
+        {"setting-window-size", "Window Size"},
     },
 };
 std::string_view const& i18n(std::string_view const& key)
@@ -54,11 +58,20 @@ struct DisplayMode
     std::string name;
     DXGI_MODE_DESC mode = {};
 };
+
+struct Size
+{
+    int width;
+    int height;
+};
+
 struct Config
 {
     std::string adapter;
-    int width = 640;
-    int height = 480;
+    //int width = 640;
+    //int height = 480;
+    Size fullscreen_resolution = Size{ 1920, 1080 };
+    Size window_size = Size{ 1600, 900 };
     int refresh_rate_numerator = 0;
     int refresh_rate_denominator = 0;
     bool windowed = true;
@@ -68,6 +81,7 @@ struct Config
     int select_adapter = 0;
     int select_mode = 0;
 };
+
 
 constexpr UINT WINDOW_SIZE_X = 400;
 constexpr UINT WINDOW_SIZE_Y = 200;
@@ -108,8 +122,9 @@ struct Window
 
     std::vector<std::string> dxgi_adapter_list;
     std::vector<DisplayMode> dxgi_output_mode_list;
-    
+
     Config luastg_config;
+    nlohmann::json json;
 
     BOOL is_open = FALSE;
     BOOL want_exit = FALSE;
@@ -194,6 +209,7 @@ struct Window
         ImGui::SetNextWindowSize(ImVec2((float)win32_window_width, (float)win32_window_height), ImGuiCond_Always);
         if (ImGui::Begin("##MainWindow", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground))
         {
+            ImGui::PushItemWidth(200);
             int select_lang = (int)i18n_map_index;
             char const* langs[2] = {
                 i18n_c_str("language-chinese"),
@@ -231,18 +247,29 @@ struct Window
                 ImGui::EndCombo();
             }
 
+            ImGui::PushItemWidth(93);
+            ImGui::InputInt("x", &luastg_config.window_size.width, 0);
+            ImGui::SameLine();
+            ImGui::SetCursorPosX(115);
+            ImGui::InputInt(i18n_c_str("setting-window-size"), &luastg_config.window_size.height, 0);
+            ImGui::PopItemWidth();
+            ImGui::PopItemWidth();
+
             bool is_fullscreen = !luastg_config.windowed;
             ImGui::Checkbox(i18n_c_str("setting-fullscreen"), &is_fullscreen);
+            ImGui::SameLine();
             luastg_config.windowed = !is_fullscreen;
-
+            ImGui::SetCursorPosX(115);
             ImGui::Checkbox(i18n_c_str("setting-vsync"), &luastg_config.vsync);
 
-            if (ImGui::Button(i18n_c_str("setting-cancel")))
+            ImGui::Separator();
+
+            if (ImGui::Button(i18n_c_str("setting-cancel"), ImVec2(99, 0)))
             {
                 wantExit();
             }
             ImGui::SameLine();
-            if (ImGui::Button(i18n_c_str("setting-save")))
+            if (ImGui::Button(i18n_c_str("setting-save"), ImVec2(99, 0)))
             {
                 saveConfigToJson();
                 wantExit();
@@ -326,7 +353,11 @@ struct Window
         float const scaling = platform::HighDPI::ScalingFromDpi(win32_window_dpi);
 
         ImGuiStyle style;
-        ImGui::StyleColorsLight(&style);
+        if (platform::WindowTheme::ShouldApplicationEnableDarkMode())
+            ImGui::StyleColorsDark(&style);
+        else
+            ImGui::StyleColorsLight(&style);
+        
         style.ChildBorderSize = 1.0f;
         style.FrameBorderSize = 1.0f;
         style.PopupBorderSize = 1.0f;
@@ -420,7 +451,7 @@ struct Window
             return false;
         }
         
-        auto swpachain = DXGI_SWAP_CHAIN_DESC{
+        auto swapchain = DXGI_SWAP_CHAIN_DESC{
             .BufferDesc = DXGI_MODE_DESC{
                 .Width = win32_window_width,
                 .Height = win32_window_height,
@@ -443,7 +474,7 @@ struct Window
             .SwapEffect = DXGI_SWAP_EFFECT_DISCARD,
             .Flags = 0,
         };
-        hr = dxgi_factory->CreateSwapChain(d3d11_device.Get(), &swpachain, &dxgi_swapchain);
+        hr = dxgi_factory->CreateSwapChain(d3d11_device.Get(), &swapchain, &dxgi_swapchain);
         if (FAILED(hr))
         {
             throw std::runtime_error("IDXGIFactory1::CreateSwapChain failed.");
@@ -563,11 +594,12 @@ struct Window
             std::ifstream file(L"config.json", std::ios::in | std::ios::binary);
             if (file.is_open())
             {
-                nlohmann::json json;
                 file >> json;
                 luastg_config.adapter = json["gpu"].get<std::string>();
-                luastg_config.width = json["width"].get<int>();
-                luastg_config.height = json["height"].get<int>();
+                luastg_config.window_size.width = json["window_size"]["width"].get<int>();
+                luastg_config.window_size.height = json["window_size"]["height"].get<int>();
+                luastg_config.fullscreen_resolution.width = json["fullscreen_resolution"]["width"].get<int>();
+                luastg_config.fullscreen_resolution.height = json["fullscreen_resolution"]["height"].get<int>();
                 luastg_config.refresh_rate_numerator = json["refresh_rate_numerator"].get<int>();
                 luastg_config.refresh_rate_denominator = json["refresh_rate_denominator"].get<int>();
                 luastg_config.windowed = json["windowed"].get<bool>();
@@ -590,7 +622,7 @@ struct Window
         bool find_mode = false;
         for (auto& v : dxgi_output_mode_list)
         {
-            if (luastg_config.width == (int)v.mode.Width && luastg_config.height == (int)v.mode.Height
+            if (luastg_config.fullscreen_resolution.width == (int)v.mode.Width && luastg_config.fullscreen_resolution.height == (int)v.mode.Height
                 && luastg_config.refresh_rate_numerator == (int)v.mode.RefreshRate.Numerator
                 && luastg_config.refresh_rate_denominator == (int)v.mode.RefreshRate.Denominator)
             {
@@ -603,7 +635,7 @@ struct Window
         {
             for (auto& v : dxgi_output_mode_list)
             {
-                if (luastg_config.width == (int)v.mode.Width && luastg_config.height == (int)v.mode.Height)
+                if (luastg_config.fullscreen_resolution.width == (int)v.mode.Width && luastg_config.fullscreen_resolution.height == (int)v.mode.Height)
                 {
                     luastg_config.select_mode = &v - dxgi_output_mode_list.data();
                     find_mode = true;
@@ -615,7 +647,7 @@ struct Window
         {
             for (auto& v : dxgi_output_mode_list)
             {
-                if (luastg_config.width == (int)v.mode.Width || luastg_config.height == (int)v.mode.Height)
+                if (luastg_config.fullscreen_resolution.width == (int)v.mode.Width || luastg_config.fullscreen_resolution.height == (int)v.mode.Height)
                 {
                     luastg_config.select_mode = &v - dxgi_output_mode_list.data();
                     find_mode = true;
@@ -628,8 +660,8 @@ struct Window
     {
         luastg_config.adapter = dxgi_adapter_list[luastg_config.select_adapter];
         auto& mode = dxgi_output_mode_list[luastg_config.select_mode].mode;
-        luastg_config.width = mode.Width;
-        luastg_config.height = mode.Height;
+        luastg_config.fullscreen_resolution.width = mode.Width;
+        luastg_config.fullscreen_resolution.height = mode.Height;
         luastg_config.refresh_rate_numerator = mode.RefreshRate.Numerator;
         luastg_config.refresh_rate_denominator = mode.RefreshRate.Denominator;
         luastg_config.dgpu_trick = luastg_config.select_adapter > 0;
@@ -637,10 +669,11 @@ struct Window
         std::ofstream file(L"config.json", std::ios::out | std::ios::binary | std::ios::trunc);
         if (file.is_open())
         {
-            nlohmann::json json;
             json["gpu"] = luastg_config.adapter;
-            json["width"] = luastg_config.width;
-            json["height"] = luastg_config.height;
+            json["window_size"]["width"] = luastg_config.window_size.width;
+            json["window_size"]["height"] = luastg_config.window_size.height;
+            json["fullscreen_resolution"]["width"] = luastg_config.fullscreen_resolution.width;
+            json["fullscreen_resolution"]["height"] = luastg_config.fullscreen_resolution.height;
             json["refresh_rate_numerator"] = luastg_config.refresh_rate_numerator;
             json["refresh_rate_denominator"] = luastg_config.refresh_rate_denominator;
             json["windowed"] = luastg_config.windowed;
@@ -684,7 +717,12 @@ struct Window
         updateWindowSize();
         moveToCenter();
         updateTitle();
-
+        platform::WindowTheme::UpdateColorMode(win32_window, TRUE);
+        HICON hIcon = LoadIcon(win32_wincls.hInstance, MAKEINTRESOURCE(IDI_ICON1));
+        SendMessageW(win32_window, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)hIcon);
+        SendMessageW(win32_window, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)hIcon);
+        DestroyIcon(hIcon);
+        
         ShowWindow(win32_window, SW_SHOWDEFAULT);
         UpdateWindow(win32_window);
 

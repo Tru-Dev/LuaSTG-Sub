@@ -9,8 +9,10 @@ namespace Core
     void InitializeConfigure::reset()
     {
         gpu.clear();
-        width = 640;
-        height = 480;
+        windowed_width = 1600;
+        windowed_height = 900;
+        fullscreen_width = 1920;
+        fullscreen_height = 1080;
         refresh_rate_numerator = 0;
         refresh_rate_denominator = 0;
         windowed = true;
@@ -23,8 +25,26 @@ namespace Core
         {
             nlohmann::json json = nlohmann::json::parse(source);
             gpu = json["gpu"].get<std::string>();
-            width = json["width"].get<int>();
-            height = json["height"].get<int>();
+            if (json.contains("window_size"))
+            {
+                windowed_width = json["window_size"]["width"].get<int>();
+                windowed_height = json["window_size"]["height"].get<int>();
+            }
+            else
+            {
+                windowed_width = json["width"].get<int>();
+                windowed_height = json["height"].get<int>();
+            }
+            if (json.contains("fullscreen_resolution"))
+            {
+                fullscreen_width = json["fullscreen_resolution"]["width"].get<int>();
+                fullscreen_height = json["fullscreen_resolution"]["height"].get<int>();
+            }
+            else
+            {
+                fullscreen_width = json["width"].get<int>();
+                fullscreen_height = json["height"].get<int>();
+            }
             refresh_rate_numerator = json["refresh_rate_numerator"].get<int>();
             refresh_rate_denominator = json["refresh_rate_denominator"].get<int>();
             windowed = json["windowed"].get<bool>();
@@ -44,8 +64,10 @@ namespace Core
         {
             nlohmann::json json;
             json["gpu"] = gpu;
-            json["width"] = width;
-            json["height"] = height;
+            json["window_size"]["width"] = windowed_width;
+            json["window_size"]["height"] = windowed_height;
+            json["fullscreen_resolution"]["width"] = fullscreen_width;
+            json["fullscreen_resolution"]["height"] = fullscreen_height;
             json["refresh_rate_numerator"] = refresh_rate_numerator;
             json["refresh_rate_denominator"] = refresh_rate_denominator;
             json["windowed"] = windowed;
@@ -76,10 +98,12 @@ namespace Core
             nlohmann::json json;
             file >> json;
             gpu = json["gpu"].get<std::string>();
-            width = json["width"].get<int>();
-            height = json["height"].get<int>();
+            windowed_width = json["window_size"]["width"].get<int>();
+            windowed_height = json["window_size"]["height"].get<int>();
             refresh_rate_numerator = json["refresh_rate_numerator"].get<int>();
             refresh_rate_denominator = json["refresh_rate_denominator"].get<int>();
+            fullscreen_width = json["fullscreen_resolution"]["width"].get<int>();
+            fullscreen_height = json["fullscreen_resolution"]["height"].get<int>();
             windowed = json["windowed"].get<bool>();
             vsync = json["vsync"].get<bool>();
             dgpu_trick = json["dgpu_trick"].get<bool>();
@@ -97,8 +121,10 @@ namespace Core
         {
             nlohmann::json json;
             json["gpu"] = gpu;
-            json["width"] = width;
-            json["height"] = height;
+            json["window_size"]["width"] = windowed_width;
+            json["window_size"]["height"] = windowed_height;
+            json["fullscreen_resolution"]["width"] = fullscreen_width;
+            json["fullscreen_resolution"]["height"] = fullscreen_height;
             json["refresh_rate_numerator"] = refresh_rate_numerator;
             json["refresh_rate_denominator"] = refresh_rate_denominator;
             json["windowed"] = windowed;
