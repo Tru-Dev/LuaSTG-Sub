@@ -246,7 +246,7 @@ namespace LuaSTGPlus
 				return false;
 			}
 			ps->SetActive(false);
-			ps->SetCenter(fcyVec2((float)x, (float)y));
+			ps->SetCenter(Core::Vector2F((float)x, (float)y));
 			ps->SetRotation((float)rot);
 			ps->SetActive(true);
 			// 设置资源
@@ -358,16 +358,16 @@ namespace LuaSTGPlus
 			// 更新粒子系统（若有）
 			if (res && res->GetType() == ResourceType::Particle)
 			{
-				ps->SetRotation((fFloat)rot);
+				ps->SetRotation((float)rot);
 				if (ps->IsActived()) // 兼容性处理
 				{
 					ps->SetActive(false);
-					ps->SetCenter(fcyVec2((fFloat)x, (fFloat)y));
+					ps->SetCenter(Core::Vector2F((float)x, (float)y));
 					ps->SetActive(true);
 				}
 				else
 				{
-					ps->SetCenter(fcyVec2((fFloat)x, (fFloat)y));
+					ps->SetCenter(Core::Vector2F((float)x, (float)y));
 				}
 				ps->Update(1.0f / 60.f);
 			}
@@ -465,7 +465,7 @@ namespace LuaSTGPlus
 				case ResourceType::Animation:
 					do {
 						ResAnimation* ani = static_cast<ResAnimation*>(res);
-						fuInt const idx = ani->GetSpriteIndexByTimer(ani_timer);
+						uint32_t const idx = ani->GetSpriteIndexByTimer(ani_timer);
 						// backup
 						Core::Color4B color[4] = { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF };
 						ani->GetSprite(idx)->getColor(color);

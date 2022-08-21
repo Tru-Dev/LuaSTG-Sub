@@ -54,19 +54,18 @@ namespace LuaSTGPlus
 		Core::Graphics::WindowFrameStyle m_OptionWindowStyle = Core::Graphics::WindowFrameStyle::Normal;
 #else
 		Core::Graphics::WindowFrameStyle m_OptionWindowStyle = Core::Graphics::WindowFrameStyle::Fixed;
-#endif // RESIZABLE_GAME_WINDOW
-		fuInt m_OptionFPSLimit = 60;
+		uint32_t m_OptionFPSLimit = 60;
 		bool m_OptionVsync = false;
-		fcyVec2 m_OptionResolution = fcyVec2(640.f, 480.f);
-		fuInt m_OptionRefreshRateA = 0;
-		fuInt m_OptionRefreshRateB = 0;
+		Core::Vector2F m_OptionResolution = Core::Vector2F(640.f, 480.f);
+		uint32_t m_OptionRefreshRateA = 0;
+		uint32_t m_OptionRefreshRateB = 0;
 		std::wstring m_OptionGPU;
 		std::string m_OptionTitle = LUASTG_INFO;
 		bool m_OptionCursor = true;
-		fDouble m_fFPS = 0.;
-		fDouble m_fAvgFPS = 0.;
-		fFloat m_gSEVol = 1.0f;
-		fFloat m_gBGMVol = 1.0f;
+		double m_fFPS = 0.;
+		double m_fAvgFPS = 0.;
+		float m_gSEVol = 1.0f;
+		float m_gBGMVol = 1.0f;
 
 		//渲染状态
 		bool m_bRenderStarted = false;
@@ -111,26 +110,26 @@ namespace LuaSTGPlus
 		void ResetMouseInput();
 
 		//检查按键是否按下
-		fBool GetKeyState(int VKCode)noexcept;
+		bool GetKeyState(int VKCode)noexcept;
 		
 		/// @brief 获得最后一次按键输入
 		int GetLastKey()noexcept;
 		
 		/// @brief 获取鼠标位置（以窗口左下角为原点）
-		fcyVec2 GetMousePosition(bool no_flip = false)noexcept;
+		Core::Vector2F GetMousePosition(bool no_flip = false)noexcept;
 		
 		/// @brief 获取鼠标滚轮增量
-		fInt GetMouseWheelDelta()noexcept;
+		int32_t GetMouseWheelDelta()noexcept;
 		
 		/// @brief 检查鼠标是否按下
-		fBool GetMouseState_legacy(int button) noexcept;
-		fBool GetMouseState(int button) noexcept;
+		bool GetMouseState_legacy(int button) noexcept;
+		bool GetMouseState(int button) noexcept;
 		
 	public: // 脚本调用接口，含义参见API文档
 		void SetWindowed(bool v)noexcept;
 		void SetDefaultWindowStyle(Core::Graphics::WindowFrameStyle v) { m_OptionWindowStyle = v; };
 		void SetVsync(bool v)noexcept;
-		void SetResolution(fuInt width, fuInt height, fuInt A = 0, fuInt B = 0)noexcept;
+		void SetResolution(uint32_t width, uint32_t height, uint32_t A = 0, uint32_t B = 0)noexcept;
 		void SetTitle(const char* v)noexcept;
 		void SetPreferenceGPU(const char* v, bool dGPU_trick = false)noexcept;
 		void SetSplash(bool v)noexcept;
@@ -146,7 +145,7 @@ namespace LuaSTGPlus
 		bool ChangeVideoMode2(int width, int height, bool windowed, bool vsync, int hza, int hzb, bool flip)noexcept;
 		bool UpdateVideoMode()noexcept;
 		
-		void SetFPS(fuInt v)noexcept;
+		void SetFPS(uint32_t v)noexcept;
 		
 		/// @brief 获取当前的FPS
 		double GetFPS()noexcept { return m_fAvgFPS; }
@@ -180,9 +179,9 @@ namespace LuaSTGPlus
 		bool RenderTexture(const char* name, BlendMode blend, Core::Graphics::IRenderer::DrawVertex vertex[])noexcept;
 		
 		/// @brief 渲染文字
-		bool RenderText(ResFont* p, wchar_t* strBuf, fcyRect rect, fcyVec2 scale, ResFont::FontAlignHorizontal halign, ResFont::FontAlignVertical valign, bool bWordBreak)noexcept;
+		bool RenderText(ResFont* p, wchar_t* strBuf, Core::RectF rect, Core::Vector2F scale, ResFont::FontAlignHorizontal halign, ResFont::FontAlignVertical valign, bool bWordBreak)noexcept;
 		
-		fcyVec2 CalcuTextSize(ResFont* p, const wchar_t* strBuf, fcyVec2 scale)noexcept;
+		Core::Vector2F CalcuTextSize(ResFont* p, const wchar_t* strBuf, Core::Vector2F scale)noexcept;
 		
 		bool RenderText(const char* name, const char* str, float x, float y, float scale, ResFont::FontAlignHorizontal halign, ResFont::FontAlignVertical valign)noexcept;
 		
@@ -194,7 +193,7 @@ namespace LuaSTGPlus
 		bool CheckRenderTargetInUse(ResTexture* rt)noexcept;
 		bool PushRenderTarget(ResTexture* rt)noexcept;
 		bool PopRenderTarget()noexcept;
-		fcyVec2 GetCurrentRenderTargetSize();
+		Core::Vector2U GetCurrentRenderTargetSize();
 
 		void DebugSetGeometryRenderState();
 		void DebugDrawCircle(float const x, float const y, float const r, Core::Color4B const color);
@@ -204,12 +203,12 @@ namespace LuaSTGPlus
 	public:
 		// 文字渲染器包装
 		bool FontRenderer_SetFontProvider(const char* name);
-		void FontRenderer_SetScale(const fcyVec2& s);
+		void FontRenderer_SetScale(const Core::Vector2F& s);
 		
-		fcyRect FontRenderer_MeasureTextBoundary(const char* str, size_t len);
-		fcyVec2 FontRenderer_MeasureTextAdvance(const char* str, size_t len);
-		bool FontRenderer_RenderText(const char* str, size_t len, fcyVec2& pos, const float z, const BlendMode blend, Core::Color4B const& color);
-		bool FontRenderer_RenderTextInSpace(const char* str, size_t len, fcyVec3& pos, const fcyVec3& rvec, const fcyVec3& dvec, const BlendMode blend, Core::Color4B const& color);
+		Core::RectF FontRenderer_MeasureTextBoundary(const char* str, size_t len);
+		Core::Vector2F FontRenderer_MeasureTextAdvance(const char* str, size_t len);
+		bool FontRenderer_RenderText(const char* str, size_t len, Core::Vector2F& pos, const float z, const BlendMode blend, Core::Color4B const& color);
+		bool FontRenderer_RenderTextInSpace(const char* str, size_t len, Core::Vector3F& pos, Core::Vector3F const& rvec, Core::Vector3F const& dvec, const BlendMode blend, Core::Color4B const& color);
 		
 		float FontRenderer_GetFontLineHeight();
 		float FontRenderer_GetFontAscender();
