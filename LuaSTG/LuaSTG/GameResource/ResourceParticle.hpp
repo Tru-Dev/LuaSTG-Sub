@@ -2,7 +2,6 @@
 #include "GameResource/ResourceBase.hpp"
 #include "Core/Graphics/Sprite.hpp"
 #include "Utility/xorshift.hpp"
-#include "fcyMath.h"
 #include "fcyOS/fcyMemPool.h"
 
 #define LPARTICLE_MAXCNT 500  // 单个粒子池最多有500个粒子，这是HGE粒子特效的实现，不应该修改
@@ -20,7 +19,7 @@ namespace LuaSTGPlus
 		// HGE 粒子效果定义
 		struct hgeParticleSystemInfo
 		{
-			fuInt iBlendInfo;
+			uint32_t iBlendInfo;
 
 			int nEmission;   // 每秒发射个数
 			float fLifetime; // 生命期
@@ -60,8 +59,8 @@ namespace LuaSTGPlus
 		// HGE 粒子实例
 		struct hgeParticle
 		{
-			fcyVec2 vecLocation; // 位置
-			fcyVec2 vecVelocity; // 速度
+			Core::Vector2F vecLocation; // 位置
+			Core::Vector2F vecVelocity; // 速度
 
 			float fGravity;         // 重力
 			float fRadialAccel;     // 径向加速度
@@ -106,10 +105,10 @@ namespace LuaSTGPlus
 			ParticleSystemResourceInfo m_Info;
 			std::array<hgeParticle, LPARTICLE_MAXCNT> m_ParticlePool;
 			random::xoshiro128p m_Random;
-			fuInt m_RandomSeed = 0;
+			uint32_t m_RandomSeed = 0;
 			Status m_iStatus = Status::Alive;  // 状态
-			fcyVec2 m_vCenter;  // 中心
-			fcyVec2 m_vPrevCenter;  // 上一个中心
+			Core::Vector2F m_vCenter;  // 中心
+			Core::Vector2F m_vPrevCenter;  // 上一个中心
 			size_t m_iAlive = 0;  // 存活数
 			float m_fDirection = 0.0f; // 相对发射角度
 			float m_fAge = 0.f;  // 已存活时间
@@ -126,12 +125,12 @@ namespace LuaSTGPlus
 			void SetVertexColor(Core::Color4B c) noexcept;
 			int GetEmission() const noexcept;
 			void SetEmission(int e) noexcept;
-			fuInt GetSeed() const noexcept;
-			void SetSeed(fuInt seed) noexcept;
+			uint32_t GetSeed() const noexcept;
+			void SetSeed(uint32_t seed) noexcept;
 			bool IsActived() const noexcept;
 			void SetActive(bool v) noexcept;
-			void SetCenter(fcyVec2 pos) noexcept;
-			fcyVec2 GetCenter() const noexcept;
+			void SetCenter(Core::Vector2F pos) noexcept;
+			Core::Vector2F GetCenter() const noexcept;
 			float GetRotation() const noexcept;
 			void SetRotation(float r) noexcept;
 			void Update(float delta);
