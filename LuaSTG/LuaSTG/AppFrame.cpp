@@ -593,6 +593,8 @@ void AppFrame::onUpdate()
 				swapchain->setWindowMode(size.x, size.y, false);
 			}
 
+			m_OptionResolution.Set((fFloat)size.x, (fFloat)size.y);
+
 			lua_pushinteger(L, (lua_Integer)LuaSTG::LuaEngine::EngineEvent::WindowResize);
 			lua_pushinteger(L, (lua_Integer)size.x);
 			lua_pushinteger(L, (lua_Integer)size.y);
