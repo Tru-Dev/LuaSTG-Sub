@@ -6,6 +6,8 @@
 
 namespace Core
 {
+
+
     void InitializeConfigure::reset()
     {
         gpu.clear();
@@ -22,32 +24,32 @@ namespace Core
     bool InitializeConfigure::load(std::string_view const& source) noexcept
     {
         nlohmann::json json = nlohmann::json::parse(source);
-        gpu = json.value("gpu", "");
-        if (json.contains("window_size"))
+        gpu = json["gpu"].is_string() ? json["gpu"].get<std::string>() : "";
+        if (json["window_size"].is_object())
         {
-            windowed_width = json["window_size"].value("width", 1600);
-            windowed_height = json["window_size"].value("height", 900);
+            windowed_width = json["width"].is_number() ? json["window_size"]["width"].get<int>() : 1600;
+            windowed_height = json["height"].is_number() ? json["window_size"]["height"].get<int>() : 900;
         }
         else
         {
-            windowed_width = json.value("width", 1600);
-            windowed_height = json.value("height", 900);
+            windowed_width = json["width"].is_number() ? json["width"].get<int>() : 1600;
+            windowed_height = json["height"].is_number() ? json["height"].get<int>() : 900;
         }
-        if (json.contains("fullscreen_resolution"))
+        if (json["fullscreen_resolution"].is_object())
         {
-            fullscreen_width = json["fullscreen_resolution"].value("width", 1920);
-            fullscreen_height = json["fullscreen_resolution"].value("height", 1080);
+            fullscreen_width = json["width"].is_number() ? json["fullscreen_resolution"]["width"].get<int>() : 1920;
+            fullscreen_height = json["height"].is_number() ? json["fullscreen_resolution"]["height"].get<int>() : 1080;
         }
         else
         {
-            fullscreen_width = json.value("width", 1920);
-            fullscreen_height = json.value("height", 1080);
+            fullscreen_width = json["width"].is_number() ? json["width"].get<int>() : 1920;
+            fullscreen_height = json["height"].is_number() ? json["height"].get<int>() : 1080;
         }
-        refresh_rate_numerator = json.value("refresh_rate_numerator", 0);
-        refresh_rate_denominator = json.value("refresh_rate_denominator", 0);
-        windowed = json.value("windowed", true);
-        vsync = json.value("vsync", false);
-        dgpu_trick = json.value("dgpu_trick", false);
+        refresh_rate_numerator = json["refresh_rate_numerator"].is_number() ? json["refresh_rate_numerator"].get<int>() : 0;
+        refresh_rate_denominator = json["refresh_rate_denominator"].is_number() ? json["refresh_rate_denominator"].get<int>() : 0;
+        windowed = json["windowed"].is_boolean() ? json["windowed"].get<bool>() : true;
+        vsync = json["vsync"].is_boolean() ? json["vsync"].get<bool>() : false;
+        dgpu_trick = json["dgpu_trick"].is_boolean() ? json["dgpu_trick"].get<bool>() : false;
         return true;
     }
     bool InitializeConfigure::save(std::string& buffer)
@@ -87,32 +89,32 @@ namespace Core
         }
         nlohmann::json json;
         file >> json;
-        gpu = json.value("gpu", "");
-        if (json.contains("window_size"))
+        gpu = json["gpu"].is_string() ? json["gpu"].get<std::string>() : "";
+        if (json["window_size"].is_object())
         {
-            windowed_width = json["window_size"].value("width", 1600);
-            windowed_height = json["window_size"].value("height", 900);
+            windowed_width = json["width"].is_number() ? json["window_size"]["width"].get<int>() : 1600;
+            windowed_height = json["height"].is_number() ? json["window_size"]["height"].get<int>() : 900;
         }
         else
         {
-            windowed_width = json.value("width", 1600);
-            windowed_height = json.value("height", 900);
+            windowed_width = json["width"].is_number() ? json["width"].get<int>() : 1600;
+            windowed_height = json["height"].is_number() ? json["height"].get<int>() : 900;
         }
-        if (json.contains("fullscreen_resolution"))
+        if (json["fullscreen_resolution"].is_object())
         {
-            fullscreen_width = json["fullscreen_resolution"].value("width", 1920);
-            fullscreen_height = json["fullscreen_resolution"].value("height", 1080);
+            fullscreen_width = json["width"].is_number() ? json["fullscreen_resolution"]["width"].get<int>() : 1920;
+            fullscreen_height = json["height"].is_number() ? json["fullscreen_resolution"]["height"].get<int>() : 1080;
         }
         else
         {
-            fullscreen_width = json.value("width", 1920);
-            fullscreen_height = json.value("height", 1080);
+            fullscreen_width = json["width"].is_number() ? json["width"].get<int>() : 1920;
+            fullscreen_height = json["height"].is_number() ? json["height"].get<int>() : 1080;
         }
-        refresh_rate_numerator = json.value("refresh_rate_numerator", 0);
-        refresh_rate_denominator = json.value("refresh_rate_denominator", 0);
-        windowed = json.value("windowed", true);
-        vsync = json.value("vsync", false);
-        dgpu_trick = json.value("dgpu_trick", false);
+        refresh_rate_numerator = json["refresh_rate_numerator"].is_number() ? json["refresh_rate_numerator"].get<int>() : 0;
+        refresh_rate_denominator = json["refresh_rate_denominator"].is_number() ? json["refresh_rate_denominator"].get<int>() : 0;
+        windowed = json["windowed"].is_boolean() ? json["windowed"].get<bool>() : true;
+        vsync = json["vsync"].is_boolean() ? json["vsync"].get<bool>() : false;
+        dgpu_trick = json["dgpu_trick"].is_boolean() ? json["dgpu_trick"].get<bool>() : false;
         return true;
     }
     bool InitializeConfigure::saveToFile(std::string_view const& path) noexcept
