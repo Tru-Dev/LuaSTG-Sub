@@ -598,8 +598,8 @@ struct Window
                 luastg_config.adapter = json["gpu"].is_string() ? json["gpu"].get<std::string>() : "";
                 if (json["window_size"].is_object())
                 {
-                    luastg_config.window_size.width = json["width"].is_number() ? json["window_size"]["width"].get<int>() : 1600;
-                    luastg_config.window_size.height = json["height"].is_number() ? json["window_size"]["height"].get<int>() : 900;
+                    luastg_config.window_size.width = json["window_size"]["width"].is_number() ? json["window_size"]["width"].get<int>() : 1600;
+                    luastg_config.window_size.height = json["window_size"]["height"].is_number() ? json["window_size"]["height"].get<int>() : 900;
                 }
                 else
                 {
@@ -608,8 +608,8 @@ struct Window
                 }
                 if (json["fullscreen_resolution"].is_object())
                 {
-                    luastg_config.fullscreen_resolution.width = json["width"].is_number() ? json["fullscreen_resolution"]["width"].get<int>() : 1920;
-                    luastg_config.fullscreen_resolution.height = json["height"].is_number() ? json["fullscreen_resolution"]["height"].get<int>() : 1080;
+                    luastg_config.fullscreen_resolution.width = json["fullscreen_resolution"]["width"].is_number() ? json["fullscreen_resolution"]["width"].get<int>() : 1920;
+                    luastg_config.fullscreen_resolution.height = json["fullscreen_resolution"]["height"].is_number() ? json["fullscreen_resolution"]["height"].get<int>() : 1080;
                 }
                 else
                 {

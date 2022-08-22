@@ -27,8 +27,8 @@ namespace Core
         gpu = json["gpu"].is_string() ? json["gpu"].get<std::string>() : "";
         if (json["window_size"].is_object())
         {
-            windowed_width = json["width"].is_number() ? json["window_size"]["width"].get<int>() : 1600;
-            windowed_height = json["height"].is_number() ? json["window_size"]["height"].get<int>() : 900;
+            windowed_width = json["window_size"]["width"].is_number() ? json["window_size"]["width"].get<int>() : 1600;
+            windowed_height = json["window_size"]["height"].is_number() ? json["window_size"]["height"].get<int>() : 900;
         }
         else
         {
@@ -37,8 +37,8 @@ namespace Core
         }
         if (json["fullscreen_resolution"].is_object())
         {
-            fullscreen_width = json["width"].is_number() ? json["fullscreen_resolution"]["width"].get<int>() : 1920;
-            fullscreen_height = json["height"].is_number() ? json["fullscreen_resolution"]["height"].get<int>() : 1080;
+            fullscreen_width = json["fullscreen_resolution"]["width"].is_number() ? json["fullscreen_resolution"]["width"].get<int>() : 1920;
+            fullscreen_height = json["fullscreen_resolution"]["height"].is_number() ? json["fullscreen_resolution"]["height"].get<int>() : 1080;
         }
         else
         {
@@ -92,8 +92,8 @@ namespace Core
         gpu = json["gpu"].is_string() ? json["gpu"].get<std::string>() : "";
         if (json["window_size"].is_object())
         {
-            windowed_width = json["width"].is_number() ? json["window_size"]["width"].get<int>() : 1600;
-            windowed_height = json["height"].is_number() ? json["window_size"]["height"].get<int>() : 900;
+            windowed_width = json["window_size"]["width"].is_number() ? json["window_size"]["width"].get<int>() : 1600;
+            windowed_height = json["window_size"]["height"].is_number() ? json["window_size"]["height"].get<int>() : 900;
         }
         else
         {
@@ -102,8 +102,8 @@ namespace Core
         }
         if (json["fullscreen_resolution"].is_object())
         {
-            fullscreen_width = json["width"].is_number() ? json["fullscreen_resolution"]["width"].get<int>() : 1920;
-            fullscreen_height = json["height"].is_number() ? json["fullscreen_resolution"]["height"].get<int>() : 1080;
+            fullscreen_width = json["fullscreen_resolution"]["width"].is_number() ? json["fullscreen_resolution"]["width"].get<int>() : 1920;
+            fullscreen_height = json["fullscreen_resolution"]["height"].is_number() ? json["fullscreen_resolution"]["height"].get<int>() : 1080;
         }
         else
         {
