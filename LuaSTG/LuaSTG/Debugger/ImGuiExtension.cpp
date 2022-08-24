@@ -804,6 +804,7 @@ namespace imgui
         
         //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
         //io.ConfigFlags |= ImGuiConfigFlags_NavEnableSetMousePos;
+        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
         
         ImGuiStyle style;
         ImGui::StyleColorsDark(&style);
@@ -860,7 +861,7 @@ namespace imgui
         
         setConfig();
         loadConfig();
-        
+
         ImGui_ImplWin32Ex_Init((void*)window->getNativeHandle());
         window->addEventListener(&g_ImGuiRenderDeviceEventListener);
         
