@@ -42,6 +42,8 @@ function FocusLoseFunc()
 end
 function FocusGainFunc()
 end
+function ResizeFunc(width, height, windowed)
+end
 function EventFunc(event, ...)
 end
 
