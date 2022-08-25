@@ -392,6 +392,7 @@ namespace Core
 				{
 				case WAIT_OBJECT_0:
 					return; // ok
+#ifdef DEBUG
 				case WAIT_ABANDONED:
 					spdlog::warn("[core] (File: {} Line: {}) WaitForSingleObjectEx: WAIT_ABANDONED", __FILE__, __LINE__);
 					break;
@@ -401,6 +402,19 @@ namespace Core
 				case WAIT_IO_COMPLETION:
 					spdlog::info("[core] (File: {} Line: {}) WaitForSingleObjectEx: WAIT_IO_COMPLETION", __FILE__, __LINE__);
 					break;
+#else
+#define __FILENAME__ "Core\\ApplicationModel_Win32.cpp"
+				case WAIT_ABANDONED:
+					spdlog::warn("[core] (File: {} Line: {}) WaitForSingleObjectEx: WAIT_ABANDONED", __FILENAME__, __LINE__);
+					break;
+				case WAIT_TIMEOUT:
+					spdlog::warn("[core] (File: {} Line: {}) WaitForSingleObjectEx: WAIT_TIMEOUT", __FILENAME__, __LINE__);
+					break;
+				case WAIT_IO_COMPLETION:
+					spdlog::info("[core] (File: {} Line: {}) WaitForSingleObjectEx: WAIT_IO_COMPLETION", __FILENAME__, __LINE__);
+					break;
+#undef __FILENAME__
+#endif // DEBUG
 				case WAIT_FAILED:
 					gHRLastError;
 					return; // failed
