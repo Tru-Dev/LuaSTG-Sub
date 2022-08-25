@@ -112,8 +112,11 @@ namespace LuaSTG::Debugger
 {
     void openWin32Console()
     {
-        if (enable_console && AllocConsole())
+        if (enable_console)
         {
+            if (!AttachConsole(ATTACH_PARENT_PROCESS))
+                if (!AllocConsole())
+                    return;
             open_console = true;
             HWND window = GetConsoleWindow();
             HMENU menu = GetSystemMenu(window, FALSE);
