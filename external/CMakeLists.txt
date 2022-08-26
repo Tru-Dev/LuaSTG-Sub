@@ -367,3 +367,60 @@ target_sources(libqoi PRIVATE
 )
 
 set_target_properties(libqoi PROPERTIES FOLDER external)
+
+# ==================== luasocket ====================
+
+add_library(luasocket STATIC)
+
+luastg_target_common_options(luasocket)
+target_include_directories(luasocket PUBLIC
+    luasocket/src
+)
+target_sources(luasocket PRIVATE
+    luasocket/src/auxiliar.c
+    luasocket/src/buffer.c
+    luasocket/src/compat.c
+    luasocket/src/except.c
+    luasocket/src/inet.c
+    luasocket/src/io.c
+    luasocket/src/luasocket.c
+    luasocket/src/mime.c
+    luasocket/src/options.c
+    luasocket/src/select.c
+#    luasocket/src/serial.c
+    luasocket/src/tcp.c
+    luasocket/src/timeout.c
+    luasocket/src/udp.c
+    luasocket/src/unix.c
+#    luasocket/src/unixdgram.c
+#    luasocket/src/unixstream.c
+#    luasocket/src/usocket.c
+    luasocket/src/wsocket.c
+    luasocket/src/auxiliar.h
+    luasocket/src/buffer.h
+    luasocket/src/compat.h
+    luasocket/src/except.h
+    luasocket/src/inet.h
+    luasocket/src/io.h
+    luasocket/src/luasocket.h
+    luasocket/src/mime.h
+    luasocket/src/options.h
+    luasocket/src/pierror.h
+    luasocket/src/select.h
+    luasocket/src/socket.h
+    luasocket/src/tcp.h
+    luasocket/src/timeout.h
+    luasocket/src/udp.h
+    luasocket/src/unix.h
+#    luasocket/src/unixdgram.h
+#    luasocket/src/unixstream.h
+#    luasocket/src/usocket.h
+    luasocket/src/wsocket.h
+)
+target_link_libraries(luasocket PUBLIC
+    lua51static
+    wsock32
+    ws2_32
+)
+
+set_target_properties(luasocket PROPERTIES FOLDER lualib)

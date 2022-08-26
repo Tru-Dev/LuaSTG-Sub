@@ -3,6 +3,7 @@ project(LuaSTGSub)
 
 #option(LINK_STEAM_API "Enable Steam API" OFF)
 #option(LUASTG_RESDIR "Custom configurations" "res")
+option(ENABLE_LUASOCKET "Enable networking" ON)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 include(cmake/CheckPlatform.cmake)

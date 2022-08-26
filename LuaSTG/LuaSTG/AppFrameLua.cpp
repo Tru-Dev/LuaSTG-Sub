@@ -7,6 +7,9 @@
 extern "C" {
 #include "lua_cjson.h"
 #include "lfs.h"
+#ifdef USE_LUASOCKET
+#include "luasocket.h"
+#endif // USE_LUASOCKET
 extern int luaopen_utf8(lua_State* L);
 extern int luaopen_string_pack(lua_State* L);
 }
@@ -280,6 +283,13 @@ namespace LuaSTGPlus
             }
             
             luaopen_cjson(L);
+#ifdef USE_LUASOCKET
+            lua_getglobal(L, "package");            // ??? package
+            lua_getfield(L, -1, "loaded");      // ??? package loaded
+            luaopen_socket_core(L);               // ??? package loaded socketlib
+            lua_setfield(L, -2, "socket.core");     // ??? package loaded
+            lua_pop(L, 2);
+#endif
             luaopen_lfs(L);
             //lua_xlsx_open(L);
             //lua_csv_open(L);

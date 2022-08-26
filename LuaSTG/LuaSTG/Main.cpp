@@ -7,7 +7,11 @@
 #define NOMINMAX
 #include <Windows.h>
 
+#ifdef USE_CONSOLE_MAIN
+int main()
+#else
 _Use_decl_annotations_ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR, int)
+#endif // USE_CONSOLE_MAIN
 {
 #ifdef _DEBUG
 	_CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);

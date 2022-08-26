@@ -25,12 +25,15 @@ namespace LuaSTG::Debugger
     static bool enable_console = false;
     static bool open_console = false;
     static bool wait_console = false;
+
+#if defined(USING_CONSOLE_OUTPUT) || defined(USE_CONSOLE_MAIN)
     static void openWin32Console();
     static void closeWin32Console();
+#endif // defined(USING_CONSOLE_OUTPUT) || defined(USE_CONSOLE_MAIN)
 
     void Logger::create()
     {
-    #ifdef USING_CONSOLE_OUTPUT
+    #if defined(USING_CONSOLE_OUTPUT) && !defined(USE_CONSOLE_MAIN)
         std::vector<std::string> args(platform::CommandLine::get());
         for (auto const& v : args)
         {
@@ -43,8 +46,10 @@ namespace LuaSTG::Debugger
                 wait_console = true;
             }
         }
+    #endif // defined(USING_CONSOLE_OUTPUT) && !defined(USE_CONSOLE_MAIN)
+    #if defined(USING_CONSOLE_OUTPUT) || defined(USE_CONSOLE_MAIN)
         openWin32Console();
-    #endif
+    #endif // defined(USING_CONSOLE_OUTPUT) || defined(USE_CONSOLE_MAIN)
 
         std::vector<spdlog::sink_ptr> sinks;
 
@@ -58,14 +63,14 @@ namespace LuaSTG::Debugger
         sinks.emplace_back(sink_debugger);
     #endif
 
-    #ifdef USING_CONSOLE_OUTPUT
+    #if defined(USING_CONSOLE_OUTPUT) || defined(USE_CONSOLE_MAIN)
         if (open_console)
         {
             auto sink_console = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
             sink_console->set_pattern("%^[%Y-%m-%d %H:%M:%S] [%L]%$ %v");
             sinks.emplace_back(sink_console);
         }
-    #endif
+    #endif // defined(USING_CONSOLE_OUTPUT) || defined(USE_CONSOLE_MAIN)
 
         auto logger = std::make_shared<spdlog::logger>("luastg", sinks.begin(), sinks.end());
         logger->set_level(spdlog::level::trace);
@@ -98,9 +103,9 @@ namespace LuaSTG::Debugger
         spdlog::drop_all();
         spdlog::shutdown();
 
-    #ifdef USING_CONSOLE_OUTPUT
+    #if defined(USING_CONSOLE_OUTPUT) && !defined(USE_CONSOLE_MAIN)
         closeWin32Console();
-    #endif
+    #endif // defined(USING_CONSOLE_OUTPUT) && !defined(USE_CONSOLE_MAIN)
     }
 };
 
@@ -110,24 +115,29 @@ namespace LuaSTG::Debugger
 
 namespace LuaSTG::Debugger
 {
+#if defined(USING_CONSOLE_OUTPUT) || defined(USE_CONSOLE_MAIN)
     void openWin32Console()
     {
+#ifndef USE_CONSOLE_MAIN
         if (enable_console)
         {
-            if (!AttachConsole(ATTACH_PARENT_PROCESS))
-                if (!AllocConsole())
-                    return;
-            open_console = true;
+            if (!AllocConsole())
+                return;
             HWND window = GetConsoleWindow();
             HMENU menu = GetSystemMenu(window, FALSE);
             RemoveMenu(menu, SC_CLOSE, MF_BYCOMMAND);
             SetWindowTextW(window, L"" LUASTG_INFO);
             ShowWindow(window, SW_MAXIMIZE);
+#endif // !USE_CONSOLE_MAIN
+            open_console = true;
             SetConsoleOutputCP(CP_UTF8);
+#ifndef USE_CONSOLE_MAIN
         }
+#endif // !USE_CONSOLE_MAIN
     }
     void closeWin32Console()
     {
+#ifndef USE_CONSOLE_MAIN
         if (open_console)
         {
             if (wait_console)
@@ -141,5 +151,7 @@ namespace LuaSTG::Debugger
             }
             FreeConsole();
         }
+#endif // !USE_CONSOLE_MAIN
     }
+#endif // defined(USING_CONSOLE_OUTPUT) || defined(USE_CONSOLE_MAIN)
 }

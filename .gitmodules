@@ -65,3 +65,6 @@
 [submodule "external/image.qoi"]
 	path = external/image.qoi
 	url = https://github.com/phoboslab/qoi.git
+[submodule "external/luasocket"]
+	path = external/luasocket
+	url = https://github.com/lunarmodules/luasocket

@@ -4,20 +4,41 @@ add_subdirectory(Configurer)
 
 # LuaSTG Engine
 
-add_executable(LuaSTG WIN32)
-
-luastg_target_common_options(LuaSTG)
-luastg_target_more_warning(LuaSTG)
-target_precompile_headers(LuaSTG PRIVATE
-    LuaSTG/SharedHeaders.h
-)
-target_include_directories(LuaSTG PRIVATE
-    LuaSTG
-    LuaSTG/LuaBinding
-)
-target_compile_definitions(LuaSTG PRIVATE
+set(LUASTG_COMPILE_DEFINITIONS
     LDEVVERSION
 )
+
+set(LUASTG_ENGINE_LIBRARIES
+    spdlog::spdlog
+    utility
+    platform
+    fancylib
+    DirectXTexMini
+    DirectX::ToolKitMini
+    Core
+    xmath
+    lua51static
+    imgui
+    implot
+    lua_cjson
+    lua_filesystem
+    #lua_xlsx_csv
+    lua_imgui
+    imgui_impl_win32ex
+    imgui_impl_dx11
+    lua_steam_api
+    tracy
+    pcgcpp
+)
+
+if(ENABLE_LUASOCKET)
+list(APPEND LUASTG_ENGINE_LIBRARIES
+    luasocket
+)
+list(APPEND LUASTG_COMPILE_DEFINITIONS
+    USE_LUASOCKET
+)
+endif()
 
 set(LUASTG_ENGINE_SOURCES
     LuaSTG/SharedHeaders.h
@@ -123,44 +144,24 @@ set(LUASTG_ENGINE_SOURCES
 
     LuaSTG/LuaSTG.manifest
 )
+
+add_executable(LuaSTG WIN32)
+
+luastg_target_common_options(LuaSTG)
+luastg_target_more_warning(LuaSTG)
+target_precompile_headers(LuaSTG PRIVATE
+    LuaSTG/SharedHeaders.h
+)
+target_include_directories(LuaSTG PRIVATE
+    LuaSTG
+    LuaSTG/LuaBinding
+)
+target_compile_definitions(LuaSTG PRIVATE ${LUASTG_COMPILE_DEFINITIONS})
+
 source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${LUASTG_ENGINE_SOURCES})
-target_sources(LuaSTG PRIVATE
-    ${LUASTG_ENGINE_SOURCES}
-)
+target_sources(LuaSTG PRIVATE ${LUASTG_ENGINE_SOURCES})
 
-set(LUASTG_RESDIR ${CMAKE_CURRENT_LIST_DIR}/LuaSTG/Custom CACHE PATH "LuaSTG custom build configuration")
-if(EXISTS ${LUASTG_RESDIR}/Custom.cmake)
-    message("LuaSTG will using custom build configuration: " ${LUASTG_RESDIR}/Custom.cmake)
-    include(${LUASTG_RESDIR}/Custom.cmake)
-elseif(EXISTS ${CMAKE_CURRENT_LIST_DIR}/${LUASTG_RESDIR}/Custom.cmake)
-    message("LuaSTG will using custom build configuration: " ${CMAKE_CURRENT_LIST_DIR}/${LUASTG_RESDIR}/Custom.cmake)
-    include(${CMAKE_CURRENT_LIST_DIR}/${LUASTG_RESDIR}/Custom.cmake)
-else()
-    message(FATAL_ERROR "LuaSTG can not find custom build configuration")
-endif()
-
-target_link_libraries(LuaSTG PRIVATE
-    spdlog::spdlog
-    utility
-    platform
-    fancylib
-    DirectXTexMini
-    DirectX::ToolKitMini
-    Core
-    xmath
-    lua51static
-    imgui
-    implot
-    lua_cjson
-    lua_filesystem
-    #lua_xlsx_csv
-    lua_imgui
-    imgui_impl_win32ex
-    imgui_impl_dx11
-    lua_steam_api
-    tracy
-    pcgcpp
-)
+target_link_libraries(LuaSTG PRIVATE ${LUASTG_ENGINE_LIBRARIES})
 
 add_custom_command(TARGET LuaSTG POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/bin
@@ -175,3 +176,56 @@ add_custom_command(TARGET LuaSTG POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:LuaSTG> ${CMAKE_SOURCE_DIR}/bin
     COMMAND_EXPAND_LISTS
 )
+
+add_executable(LuaSTG-Console WIN32)
+
+luastg_target_common_options(LuaSTG-Console)
+luastg_target_more_warning(LuaSTG-Console)
+target_precompile_headers(LuaSTG-Console PRIVATE
+    LuaSTG/SharedHeaders.h
+)
+target_include_directories(LuaSTG-Console PRIVATE
+    LuaSTG
+    LuaSTG/LuaBinding
+)
+target_compile_definitions(LuaSTG-Console PRIVATE
+    ${LUASTG_COMPILE_DEFINITIONS}
+    USE_CONSOLE_MAIN
+)
+target_link_options(LuaSTG-Console PRIVATE
+    "/subsystem:console"
+)
+
+target_sources(LuaSTG-Console PRIVATE ${LUASTG_ENGINE_SOURCES})
+
+target_link_libraries(LuaSTG-Console PRIVATE ${LUASTG_ENGINE_LIBRARIES})
+
+add_custom_command(TARGET LuaSTG-Console POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/bin
+
+    COMMAND ${CMAKE_COMMAND} -E rm -f ${CMAKE_SOURCE_DIR}/bin/$<TARGET_FILE_NAME:LuaSTG-Console>
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:LuaSTG-Console>         ${CMAKE_SOURCE_DIR}/bin
+
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:D3DCompilerRedist>  $<TARGET_FILE_DIR:LuaSTG-Console>
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:D3DCompilerRedist>  ${CMAKE_SOURCE_DIR}/bin
+
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:LuaSTG-Console> $<TARGET_FILE_DIR:LuaSTG-Console>
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:LuaSTG-Console> ${CMAKE_SOURCE_DIR}/bin
+    COMMAND_EXPAND_LISTS
+)
+
+set(LUASTG_RESDIR ${CMAKE_CURRENT_LIST_DIR}/LuaSTG/Custom CACHE PATH "LuaSTG custom build configuration")
+if(EXISTS ${LUASTG_RESDIR}/Custom.cmake)
+    message("LuaSTG will using custom build configuration: " ${LUASTG_RESDIR}/Custom.cmake)
+    include(${LUASTG_RESDIR}/Custom.cmake)
+    luastg_custom(LuaSTG ${LUASTG_RESDIR})
+    luastg_custom(LuaSTG-Console ${LUASTG_RESDIR})
+elseif(EXISTS ${CMAKE_CURRENT_LIST_DIR}/${LUASTG_RESDIR}/Custom.cmake)
+    message("LuaSTG will using custom build configuration: " ${CMAKE_CURRENT_LIST_DIR}/${LUASTG_RESDIR}/Custom.cmake)
+    include(${CMAKE_CURRENT_LIST_DIR}/${LUASTG_RESDIR}/Custom.cmake)
+    luastg_custom(LuaSTG ${CMAKE_CURRENT_LIST_DIR}/${LUASTG_RESDIR})
+    luastg_custom(LuaSTG-Console ${CMAKE_CURRENT_LIST_DIR}/${LUASTG_RESDIR})
+else()
+    message(FATAL_ERROR "LuaSTG can not find custom build configuration")
+endif()
+
