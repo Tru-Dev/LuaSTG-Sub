@@ -127,7 +127,7 @@ namespace LuaSTG::Debugger
             HMENU menu = GetSystemMenu(window, FALSE);
             RemoveMenu(menu, SC_CLOSE, MF_BYCOMMAND);
             SetWindowTextW(window, L"" LUASTG_INFO);
-            ShowWindow(window, SW_MAXIMIZE);
+            ShowWindow(window, SW_NORMAL);
 #endif // !USE_CONSOLE_MAIN
             open_console = true;
             SetConsoleOutputCP(CP_UTF8);
