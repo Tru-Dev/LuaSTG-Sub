@@ -129,7 +129,11 @@ set(LUASTG_ENGINE_SOURCES
     LuaSTG/Utility/Utility.h
     LuaSTG/Utility/ScopeObject.cpp
     LuaSTG/Utility/xorshift.hpp
-    
+
+    LuaSTG/Particle/ParticleList.h
+    LuaSTG/Particle/Particle2D.cpp
+    LuaSTG/Particle/Particle2D.h
+
     LuaSTG/AppFrame.h
     LuaSTG/AppFrame.cpp
     LuaSTG/AppFrameFontRenderer.cpp
