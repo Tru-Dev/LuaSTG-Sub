@@ -6,29 +6,31 @@
 
 namespace LuaSTGPlus::Particle
 {
-	class ParticlePool2D
+	class ParticlePool3D
 	{
 	public:
-		ParticlePool2D(int32_t size, fcyRefPointer<ResSprite> img, BlendMode blend) : plist(size), img(img), blend(blend) {}
+		ParticlePool3D(int32_t size, fcyRefPointer<ResSprite> img, BlendMode blend) : plist(size), img(img), blend(blend) {}
 		void Update();
 		void Render();
 	public:
 		struct Particle
 		{
-			Core::Vector2F pos;
-			Core::Vector2F vel;
-			Core::Vector2F accel;
+			Core::Vector3F pos;
+			Core::Vector3F vel;
+			Core::Vector3F accel;
+			Core::Vector3F rot;
+			Core::Vector3F omiga;
 			Core::Vector2F scale;
-			float rot;
-			float omiga;
 			Core::Color4B color;
 			uint32_t timer;
 			float extra1;
 			float extra2;
 			float extra3;
+			float extra4;
+			float extra5;
 		};
 
-		ParticlePool2D::Particle* AddParticle(ParticlePool2D::Particle p) { plist.insert(p); return plist.GetFront(); }
+		ParticlePool3D::Particle* AddParticle(ParticlePool3D::Particle p) { plist.insert(p); return plist.GetFront(); }
 	public:
 		void Apply(std::function<bool(Particle*)> fn);
 	public:

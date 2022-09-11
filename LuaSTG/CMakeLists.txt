@@ -135,6 +135,8 @@ set(LUASTG_ENGINE_SOURCES
     LuaSTG/Particle/ParticleList.h
     LuaSTG/Particle/Particle2D.cpp
     LuaSTG/Particle/Particle2D.h
+    LuaSTG/Particle/Particle3D.cpp
+    LuaSTG/Particle/Particle3D.h
 
     LuaSTG/AppFrame.h
     LuaSTG/AppFrame.cpp
