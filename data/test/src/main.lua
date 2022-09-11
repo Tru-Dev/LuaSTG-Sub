@@ -23,6 +23,8 @@ require("test_mesh")
 require("test_stringpack")
 require("test_log")
 require("test_filesys")
+require("test_dwrite")
+require("test_colli")
 
 function GameInit()
     window:init()

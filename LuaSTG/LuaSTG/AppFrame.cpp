@@ -2,6 +2,7 @@
 #include "Core/FileManager.hpp"
 #include "utility/encoding.hpp"
 #include "platform/XInput.hpp"
+#include "platform/AdapterPolicy.hpp"
 #include "Utility/Utility.h"
 #include "Debugger/ImGuiExtension.h"
 #include "LuaBinding/LuaAppFrame.hpp"
@@ -18,10 +19,8 @@ AppFrame& AppFrame::GetInstance()
 	static AppFrame s_Instance;
 	return s_Instance;
 }
-AppFrame::AppFrame()noexcept
-{
-}
-AppFrame::~AppFrame()noexcept
+AppFrame::AppFrame() noexcept = default;
+AppFrame::~AppFrame() noexcept
 {
 	if (m_iStatus != AppStatus::NotInitialized && m_iStatus != AppStatus::Destroyed)
 	{
@@ -90,7 +89,7 @@ void AppFrame::SetPreferenceGPU(const char* v, bool dGPU_trick)noexcept
 	try
 	{
 		m_OptionGPU = std::move(utility::encoding::to_wide(v));
-		SetAdapterPolicy(dGPU_trick);
+		platform::AdapterPolicy::setAll(dGPU_trick);
 	}
 	catch (const std::bad_alloc&)
 	{
@@ -237,7 +236,7 @@ bool AppFrame::ChangeVideoMode2(int width, int height, bool windowed, bool vsync
 				}
 				else
 				{
-					logInfo();
+					logError();
 				}
 				if (!m_OptionWindowed)
 				{
@@ -635,6 +634,7 @@ void AppFrame::onUpdate()
 		lua_pop(L, 1);
 		if (tAbort)
 			m_pAppModel->requestExit();
+		m_ResourceMgr.UpdateSound();
 	}
 }
 void AppFrame::onRender()

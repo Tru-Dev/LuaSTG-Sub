@@ -20,11 +20,14 @@
 #include <string>
 #include <string_view>
 
+#define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
 #include <windowsx.h>
 #include <wrl/client.h>
+#include <wrl/wrappers/corewrappers.h>
 #include <dwmapi.h>
+#include <shellapi.h>
 #include <ShellScalingApi.h>
 #include <Shobjidl.h>
 #include <Knownfolders.h>

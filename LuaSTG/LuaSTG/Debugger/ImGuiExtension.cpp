@@ -297,11 +297,11 @@ static int lib_ShowMemoryUsageWindow(lua_State* L)
                 ImGui::Checkbox("More Informations", &more_info);
 
                 if (more_info) ImGui::Text("System Memory Usage: %u%%", info.dwMemoryLoad);
-                if (more_info) ImGui::Text("Totoal Physical Memory: %s", bytes_count_to_string(info.ullTotalPhys).c_str());
+                if (more_info) ImGui::Text("Total Physical Memory: %s", bytes_count_to_string(info.ullTotalPhys).c_str());
                 if (more_info) ImGui::Text("Avalid Physical Memory: %s", bytes_count_to_string(info.ullAvailPhys).c_str());
-                if (more_info) ImGui::Text("Totoal Page File: %s", bytes_count_to_string(info.ullTotalPageFile).c_str());
+                if (more_info) ImGui::Text("Total Page File: %s", bytes_count_to_string(info.ullTotalPageFile).c_str());
                 if (more_info) ImGui::Text("Avalid Page File: %s", bytes_count_to_string(info.ullAvailPageFile).c_str());
-                if (more_info) ImGui::Text("Totoal User Mode Memory Space: %s", bytes_count_to_string(info.ullTotalVirtual).c_str());
+                if (more_info) ImGui::Text("Total User Mode Memory Space: %s", bytes_count_to_string(info.ullTotalVirtual).c_str());
                 ImGui::Text("Avalid User Mode Memory Space: %s", bytes_count_to_string(info.ullAvailVirtual).c_str());
                 ImGui::Text("Alloc* User Mode Memory Space: %s", bytes_count_to_string(info.ullTotalVirtual - info.ullAvailVirtual).c_str());
 
@@ -994,7 +994,7 @@ namespace imgui
             DWORD xdevice = 0;
             for (size_t i = 0; i < 4; i += 1)
             {
-                auto hr = platform::XInput::getState(i, xstate);
+                auto hr = platform::XInput::getState((DWORD)i, xstate);
                 if (hr == ERROR_SUCCESS)
                 {
                     bxstate[i] = true;
@@ -1028,7 +1028,7 @@ namespace imgui
                         }
                         
                         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.8f);
-                        ImGui::Combo("Devices", &current_didx, combo_data.data(), combo_data.size());
+                        ImGui::Combo("Devices", &current_didx, combo_data.data(), (int)combo_data.size());
                         ImGui::SameLine();
                         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.2f);
                         if (ImGui::Button("Refresh"))
@@ -1129,7 +1129,7 @@ namespace imgui
                         }
                         
                         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.8f);
-                        ImGui::Combo("Devices", &current_didx, combo_data.data(), combo_data.size());
+                        ImGui::Combo("Devices", &current_didx, combo_data.data(), (int)combo_data.size());
                         ImGui::SameLine();
                         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.2f);
                         if (ImGui::Button("Refresh"))
@@ -1205,7 +1205,7 @@ namespace imgui
                         }
                         
                         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.8f);
-                        ImGui::Combo("Devices", &current_xidx, combo_data.data(), combo_data.size());
+                        ImGui::Combo("Devices", &current_xidx, combo_data.data(), (int)combo_data.size());
                         
                         if (current_xidx < (int)xdevice)
                         {

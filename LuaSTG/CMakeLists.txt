@@ -79,6 +79,9 @@ set(LUASTG_ENGINE_SOURCES
     LuaSTG/GameResource/ResourceSprite.hpp
     LuaSTG/GameResource/ResourceTexture.hpp
     LuaSTG/GameResource/ResourceTexture.cpp
+
+    LuaSTG/LuaBinding/lua_dwrite.hpp
+    LuaSTG/LuaBinding/lua_dwrite.cpp
     
     LuaSTG/LuaBinding/lua_particle.hpp
     LuaSTG/LuaBinding/lua_particle.cpp
@@ -145,7 +148,6 @@ set(LUASTG_ENGINE_SOURCES
     LuaSTG/AppFrameLua.cpp
     LuaSTG/AppFrameRender.cpp
     LuaSTG/AppFrameRenderEx.cpp
-    LuaSTG/AppFrameAdapterPolicy.cpp
     LuaSTG/LConfig.h
     LuaSTG/LMathConstant.hpp
     LuaSTG/Main.cpp

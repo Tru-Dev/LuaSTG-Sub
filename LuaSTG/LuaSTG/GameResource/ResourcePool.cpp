@@ -228,6 +228,39 @@ namespace LuaSTGPlus
         return true;
     }
 
+    bool ResourcePool::CreateTexture(const char* name, int width, int height) noexcept
+    {
+        if (m_TexturePool.find(name) != m_TexturePool.end()) {
+            if (ResourceMgr::GetResourceLoadingLog()) {
+                spdlog::warn("[luastg] LoadTexture: 纹理'{}'已存在，创建操作已取消", name);
+            }
+            return true;
+        }
+
+        Core::ScopeObject<Core::Graphics::ITexture2D> p_texture;
+        if (!LAPP.GetAppModel()->getDevice()->createTexture(Core::Vector2U((uint32_t)width, (uint32_t)height), ~p_texture))
+        {
+            spdlog::error("[luastg] 从创建纹理'{}'({}x{})失败", name, width, height);
+            return false;
+        }
+
+        try {
+            fcyRefPointer<ResTexture> tRes;
+            tRes.DirectSet(new ResTexture(name, p_texture.get()));
+            m_TexturePool.emplace(name, tRes);
+        }
+        catch (const std::bad_alloc&) {
+            spdlog::error("[luastg] LoadTexture: 内存不足");
+            return false;
+        }
+
+        if (ResourceMgr::GetResourceLoadingLog()) {
+            spdlog::info("[luastg] LoadTexture: 已创建纹理'{}'({}x{}) ({})", name, width, height, getResourcePoolTypeName());
+        }
+
+        return true;
+    }
+
     // 创建渲染目标
 
     bool ResourcePool::CreateRenderTarget(const char* name, int width, int height) noexcept {
@@ -372,7 +405,7 @@ namespace LuaSTGPlus
             {
                 spdlog::warn("[luastg] LoadMusic: 音乐'{}'已存在，创建操作已取消", name);
             }
-            m_MusicPool.find(name)->second->Stop();
+            //m_MusicPool.find(name)->second->Stop(); // 注：以前确实不判断同名资源是否存在，但是 emplace 失败了，所以没有打断旧 BGM
             return true;
         }
     

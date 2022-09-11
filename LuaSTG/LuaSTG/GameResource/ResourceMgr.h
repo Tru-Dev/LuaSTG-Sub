@@ -49,6 +49,7 @@ namespace LuaSTGPlus
         
         // 纹理
         bool LoadTexture(const char* name, const char* path, bool mipmaps = true) noexcept;
+        bool CreateTexture(const char* name, int width, int height) noexcept;
         // 渲染目标
         bool CreateRenderTarget(const char* name, int width = 0, int height = 0) noexcept;
         // 图片精灵
@@ -123,6 +124,7 @@ namespace LuaSTGPlus
         
         bool GetTextureSize(const char* name, Core::Vector2U& out) noexcept;
         void CacheTTFFontString(const char* name, const char* text, size_t len) noexcept;
+        void UpdateSound();
     private:
         static bool g_ResourceLoadingLog;
         float m_GlobalImageScaleFactor = 1.0f;
