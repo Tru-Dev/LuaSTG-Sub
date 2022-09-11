@@ -12,7 +12,7 @@ add_compile_definitions(
     _WIN32_WINNT=0x0601       # _WIN32_WINNT_WIN7
     NTDDI_VERSION=0x06010000  # NTDDI_WIN7
 )
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Debug>:DLL>")
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 
 add_subdirectory(external)
 add_subdirectory(imgui)
