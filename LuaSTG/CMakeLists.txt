@@ -79,7 +79,9 @@ set(LUASTG_ENGINE_SOURCES
     LuaSTG/GameResource/ResourceSprite.hpp
     LuaSTG/GameResource/ResourceTexture.hpp
     LuaSTG/GameResource/ResourceTexture.cpp
-
+    
+    LuaSTG/LuaBinding/lua_particle.hpp
+    LuaSTG/LuaBinding/lua_particle.cpp
     LuaSTG/LuaBinding/lua_random.hpp
     LuaSTG/LuaBinding/lua_random.cpp
     LuaSTG/LuaBinding/lua_xinput.hpp

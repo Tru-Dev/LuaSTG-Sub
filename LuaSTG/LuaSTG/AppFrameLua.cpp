@@ -17,6 +17,7 @@ extern int luaopen_string_pack(lua_State* L);
 #include "lua_steam.h"
 #include "LuaBinding/lua_xinput.hpp"
 #include "LuaBinding/lua_random.hpp"
+#include "LuaBinding/lua_particle.hpp"
 
 #include "Core/FileManager.hpp"
 #include "utility/encoding.hpp"
@@ -296,6 +297,7 @@ namespace LuaSTGPlus
             lua_steam_open(L);
             lua_xinput_open(L);
             luaopen_random(L);
+            luaopen_particle(L);
             luaopen_utf8(L);
             luaopen_string_pack(L);
             lua_settop(L, 0);
