@@ -84,9 +84,7 @@ namespace Core::Graphics
 			IRenderer::DrawVertex(rect.a.x, rect.b.y, 0.0f, m_uv.a.x, m_uv.b.y, m_color[3].color(), m_subcolor[3].color()),
 		};
 
-		DirectX::XMMATRIX transform = 
-			DirectX::XMMatrixRotationRollPitchYaw(rot.y, rot.z, rot.x) *
-			DirectX::XMMatrixScaling(scale.x, scale.y, 1);
+		DirectX::XMMATRIX transform = DirectX::XMMatrixRotationRollPitchYaw(rot.y, rot.z, rot.x);
 
 #define transform_xyz(UNIT) \
 		{\
